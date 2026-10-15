@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="vi" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Khám Phá Nguyên Tố Hóa Học (Z: 13 - 24)</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+        }
+        .element-btn.active {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.6);
+            border-color: #3b82f6;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-slate-100 min-h-full flex flex-col">
+
+    <!-- Header -->
+    <header class="bg-slate-900/80 border-b border-slate-800 sticky top-0 z-50 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div class="flex items-center space-x-3">
+                <div class="bg-blue-600 p-2.5 rounded-xl shadow-lg shadow-blue-500/30">
+                    <i class="fa-solid fa-atom text-white text-xl animate-spin" style="animation-duration: 12s;"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold bg-gradient-to-r from-blue-400 to-indigo-300 bg-clip-text text-transparent">Hóa Học Trực Quan</h1>
+                    <p class="text-xs text-slate-400">Bộ sưu tập nguyên tố số hiệu 13 đến 24 (Chu kỳ 3 & 4)</p>
+                </div>
+            </div>
+            <!-- Quick Element Selector / Navigation pills -->
+            <div id="nav-pills" class="flex items-center gap-1.5 overflow-x-auto max-w-full pb-2 sm:pb-0 scrollbar-none">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Grid -->
+    <main class="flex-grow max-w-7xl mx-auto w-full p-4 sm:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+        <!-- Left Column: Element Selector Grid (4 cols) -->
+        <section class="lg:col-span-4 flex flex-col gap-4">
+            <div class="bg-slate-800/60 border border-slate-700/60 rounded-2xl p-4 shadow-xl backdrop-blur-md">
+                <div class="flex justify-between items-center mb-3">
+                    <h2 class="text-sm font-semibold tracking-wider text-slate-300 uppercase"><i class="fa-solid fa-table-cells text-blue-400 mr-2"></i>Chọn Nguyên Tố (13 - 24)</h2>
+                    <span id="current-badge" class="text-xs px-2.5 py-1 rounded-full bg-blue-500/20 text-blue-300 border border-blue-500/30">Z = 13</span>
+                </div>
+                <div id="element-grid" class="grid grid-cols-3 gap-2.5">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+
+            <!-- Quick Stats Card -->
+            <div class="bg-slate-800/60 border border-slate-700/60 rounded-2xl p-4 shadow-xl backdrop-blur-md flex-grow">
+                <h3 class="text-sm font-semibold tracking-wider text-slate-300 uppercase mb-3"><i class="fa-solid fa-circle-info text-indigo-400 mr-2"></i>Tổng Quan Nhanh</h3>
+                <div id="quick-stats" class="space-y-3 text-sm">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Right Column: Detailed Interactive Sections (8 cols) -->
+        <section class="lg:col-span-8 flex flex-col gap-6">
+
+            <!-- Top Banner / Element Header -->
+            <div id="element-header-card" class="bg-gradient-to-r from-blue-900/60 to-indigo-900/60 border border-blue-500/30 rounded-2xl p-6 shadow-xl relative overflow-hidden backdrop-blur-md">
+                <div class="absolute -right-10 -bottom-10 text-9xl font-black text-blue-500/10 pointer-events-none select-none" id="bg-symbol">Al</div>
+                <div class="relative z-10 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                    <div>
+                        <div class="flex items-center space-x-3 mb-1">
+                            <span id="el-number" class="px-3 py-1 bg-blue-600 text-white font-bold rounded-lg text-sm shadow-md">13</span>
+                            <h2 id="el-name" class="text-2xl sm:text-3xl font-extrabold text-white">Nhôm (Aluminium)</h2>
+                        </div>
+                        <p id="el-category" class="text-slate-300 text-sm font-medium">Kim loại • Chu kỳ 3 • Nhóm IIIA</p>
+                    </div>
+                    <div class="flex items-center gap-2 bg-slate-900/50 px-4 py-2 rounded-xl border border-slate-700">
+                        <div class="text-right">
+                            <div class="text-xs text-slate-400">Khối lượng NT</div>
+                            <div id="el-mass" class="text-sm font-bold text-amber-300">27.0 u</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab Navigation for Features -->
+            <div class="flex border-b border-slate-700/80 gap-2 overflow-x-auto">
+                <button onclick="switchTab('video')" class="tab-btn px-4 py-2.5 font-medium text-sm rounded-t-xl transition-all border-b-2 border-blue-500 text-blue-400 bg-slate-800/40" data-tab="video">
+                    <i class="fa-solid fa-play-circle mr-2"></i>Video 60s-90s
+                </button>
+                <button onclick="switchTab('uses')" class="tab-btn px-4 py-2.5 font-medium text-sm rounded-t-xl transition-all border-b-2 border-transparent text-slate-400 hover:text-slate-200" data-tab="uses">
+                    <i class="fa-solid fa-hospital-user mr-2"></i>Y Tế & Công Nghiệp
+                </button>
+                <button onclick="switchTab('model3d')" class="tab-btn px-4 py-2.5 font-medium text-sm rounded-t-xl transition-all border-b-2 border-transparent text-slate-400 hover:text-slate-200" data-tab="model3d">
+                    <i class="fa-solid fa-cubes mr-2"></i>Mô Hình 3D
+                </button>
+                <button onclick="switchTab('experiment')" class="tab-btn px-4 py-2.5 font-medium text-sm rounded-t-xl transition-all border-b-2 border-transparent text-slate-400 hover:text-slate-200" data-tab="experiment">
+                    <i class="fa-solid fa-flask mr-2"></i>Thí Nghiệm
+                </button>
+                <button onclick="switchTab('quiz')" class="tab-btn px-4 py-2.5 font-medium text-sm rounded-t-xl transition-all border-b-2 border-transparent text-slate-400 hover:text-slate-200" data-tab="quiz">
+                    <i class="fa-solid fa-brain mr-2"></i>Đố Vui Thông Minh
+                </button>
+            </div>
+
+            <!-- Tab Content Containers -->
+            <div class="bg-slate-800/50 border border-slate-700/60 rounded-2xl p-6 shadow-xl backdrop-blur-md min-h-[420px] flex flex-col justify-between">
+                
+                <!-- TAB 1: VIDEO -->
+                <div id="tab-video" class="tab-content space-y-4">
+                    <div class="flex justify-between items-center">
+                        <h3 class="font-bold text-lg text-slate-200 flex items-center">
+                            <i class="fa-solid fa-volume-high text-blue-400 mr-2"></i>Trình Thuyết Trình Âm Thanh (60 - 90 giây)
+                        </h3>
+                        <span id="speech-status-badge" class="text-xs bg-emerald-500/25 text-emerald-300 border border-emerald-500/30 px-2.5 py-1 rounded-full"><i class="fa-solid fa-circle text-[8px] mr-1.5 animate-pulse"></i>Sẵn sàng phát giọng đọc</span>
+                    </div>
+                    <!-- Audio/Speech Player card -->
+                    <div class="relative bg-slate-900 rounded-xl overflow-hidden border border-slate-700 p-6 sm:p-8 flex flex-col items-center justify-center text-center group shadow-2xl">
+                        <div class="absolute inset-0 bg-gradient-to-br from-blue-900/30 to-indigo-950/40 flex items-center justify-center pointer-events-none">
+                            <i id="audio-wave-icon" class="fa-solid fa-microphone-lines text-8xl text-blue-500/10 transition-all"></i>
+                        </div>
+                        <div class="relative z-10 max-w-lg space-y-4">
+                            <div id="video-badge" class="inline-block px-3 py-1 rounded-full bg-blue-500/20 text-blue-300 border border-blue-500/40 text-xs font-semibold">Tập 13/24: Nhôm (Aluminium)</div>
+                            <h4 id="video-title" class="text-xl font-bold text-white">Hành trình của Nhôm từ quặng Bauxite đến vật liệu tương lai</h4>
+                            <p id="video-desc" class="text-xs text-slate-300 leading-relaxed">Tóm tắt chi tiết cấu trúc, tính chất vật lý và ứng dụng thực tiễn của nguyên tố qua giọng đọc chuẩn tiếng Việt.</p>
+                            
+                            <!-- Speech Controls -->
+                            <div class="flex items-center justify-center gap-4 pt-2">
+                                <button onclick="toggleSpeechNarration()" id="play-btn" class="px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-full flex items-center gap-2.5 shadow-lg shadow-blue-600/40 transition-all transform hover:scale-105 font-medium text-sm">
+                                    <i id="play-icon" class="fa-solid fa-play"></i>
+                                    <span id="play-btn-text">Phát Thuyết Trình</span>
+                                </button>
+                                <button onclick="stopSpeechNarration()" class="px-4 py-3 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-full flex items-center gap-2 border border-slate-700 text-sm transition-all">
+                                    <i class="fa-solid fa-stop"></i> Dừng
+                                </button>
+                            </div>
+                            <!-- Live Progress bar -->
+                            <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden mt-2">
+                                <div id="video-progress" class="bg-blue-500 h-full w-0 transition-all duration-300"></div>
+                            </div>
+                            <span id="video-time" class="text-xs font-mono text-slate-400">0:00 / 1:15</span>
+                        </div>
+                    </div>
+                    <div class="bg-slate-900/60 p-3.5 rounded-xl border border-slate-700/80 text-xs text-slate-300 flex items-start gap-3">
+                        <i class="fa-solid fa-lightbulb text-amber-400 mt-0.5 text-base"></i>
+                        <p><strong class="text-white">Mẹo:</strong> Hệ thống sử dụng công nghệ Tổng hợp giọng nói (SpeechSynthesis) của trình duyệt. Bạn có thể nghe trực tiếp thuyết trình bất kỳ lúc nào mà không cần kết nối video bên ngoài.</p>
+                    </div>
+                </div>
+
+                <!-- TAB 2: MEDICAL & INDUSTRIAL USES -->
+                <div id="tab-uses" class="tab-content space-y-6 hidden">
+                    <h3 class="font-bold text-lg text-slate-200 flex items-center">
+                        <i class="fa-solid fa-industry text-emerald-400 mr-2"></i>Ứng Dụng Y Tế & Công Nghiệp
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="bg-slate-900/60 border border-slate-700/80 rounded-xl p-5 shadow-inner">
+                            <div class="flex items-center space-x-3 mb-3">
+                                <div class="p-2.5 bg-blue-500/20 text-blue-400 rounded-lg">
+                                    <i class="fa-solid fa-gears text-lg"></i>
+                                </div>
+                                <h4 class="font-bold text-white text-base">Ứng Dụng Công Nghiệp</h4>
+                            </div>
+                            <p id="use-industrial" class="text-sm text-slate-300 leading-relaxed">
+                                Nhôm được dùng rộng rãi trong ngành hàng không vũ trụ, chế tạo vỏ máy bay, ô tô nhờ đặc tính nhẹ, bền và chống ăn mòn tốt nhờ lớp màng oxit bảo vệ.
+                            </p>
+                        </div>
+                        <div class="bg-slate-900/60 border border-slate-700/80 rounded-xl p-5 shadow-inner">
+                            <div class="flex items-center space-x-3 mb-3">
+                                <div class="p-2.5 bg-emerald-500/20 text-emerald-400 rounded-lg">
+                                    <i class="fa-solid fa-heart-pulse text-lg"></i>
+                                </div>
+                                <h4 class="font-bold text-white text-base">Ứng Dụng Y Tế & Sinh Học</h4>
+                            </div>
+                            <p id="use-medical" class="text-sm text-slate-300 leading-relaxed">
+                                Hợp chất của nhôm (như nhôm hydroxide) được dùng làm thuốc kháng axit dạ dày, tá dược vaccine và dụng cụ y tế kháng khuẩn nhẹ.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="bg-indigo-950/40 border border-indigo-500/30 p-4 rounded-xl flex items-center justify-between">
+                        <div class="text-xs text-indigo-200">
+                            <i class="fa-solid fa-shield-halved mr-2 text-indigo-400"></i>Tác động sinh thái và an toàn lao động đối với nguyên tố này được kiểm soát nghiêm ngặt theo tiêu chuẩn ISO.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 3: 3D ATOM MODEL -->
+                <div id="tab-model3d" class="tab-content space-y-4 hidden">
+                    <div class="flex justify-between items-center">
+                        <h3 class="font-bold text-lg text-slate-200 flex items-center">
+                            <i class="fa-solid fa-atom text-indigo-400 mr-2"></i>Mô Hình Cấu Trúc Nguyên Tử 3D
+                        </h3>
+                        <div class="text-xs bg-slate-900 px-3 py-1.5 rounded-lg border border-slate-700 font-mono text-indigo-300" id="electron-config-text">
+                            Cấu hình: [Ne] 3s² 3p¹
+                        </div>
+                    </div>
+                    <!-- Simulated 3D interactive canvas container -->
+                    <div class="relative bg-gradient-to-b from-slate-950 to-slate-900 rounded-xl border border-slate-700 h-64 sm:h-72 flex items-center justify-center overflow-hidden shadow-2xl">
+                        <!-- Orbit rings simulator -->
+                        <div class="absolute w-32 h-32 border border-blue-500/30 rounded-full animate-spin" style="animation-duration: 8s;"></div>
+                        <div class="absolute w-48 h-48 border border-indigo-500/30 rounded-full animate-spin" style="animation-duration: 14s; animation-direction: reverse;"></div>
+                        <div class="absolute w-64 h-64 border border-purple-500/30 rounded-full animate-spin" style="animation-duration: 20s;"></div>
+                        
+                        <!-- Nucleus -->
+                        <div class="relative z-10 w-16 h-16 bg-gradient-to-tr from-blue-600 to-indigo-500 rounded-full flex flex-col items-center justify-center shadow-lg shadow-blue-500/50 border-2 border-white/20">
+                            <span id="model-symbol" class="font-black text-white text-lg">Al</span>
+                            <span id="model-z" class="text-[9px] text-blue-100 font-mono">Z=13</span>
+                        </div>
+
+                        <!-- Orbiting particles text info -->
+                        <div class="absolute bottom-3 left-3 right-3 flex justify-between text-xs text-slate-400 bg-slate-900/80 px-4 py-2 rounded-lg border border-slate-800 backdrop-blur-sm">
+                            <span>Lớp K (n=1): <strong id="shell-1" class="text-white">2 e⁻</strong></span>
+                            <span>Lớp L (n=2): <strong id="shell-2" class="text-white">8 e⁻</strong></span>
+                            <span>Lớp M (n=3): <strong id="shell-3" class="text-white">3 e⁻</strong></span>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-400 text-center">Mô hình trực quan thể hiện sự phân bố electron qua các lớp vỏ năng lượng chính.</p>
+                </div>
+
+                <!-- TAB 4: PRACTICAL EXPERIMENT -->
+                <div id="tab-experiment" class="tab-content space-y-4 hidden">
+                    <h3 class="font-bold text-lg text-slate-200 flex items-center">
+                        <i class="fa-solid fa-flask-vial text-amber-400 mr-2"></i>Thí Nghiệm Thực Tế & Hiện Tượng
+                    </h3>
+                    <div class="bg-slate-900/60 border border-slate-700/80 rounded-xl p-5 space-y-4">
+                        <div>
+                            <h4 id="exp-title" class="font-bold text-base text-amber-300 mb-1">Phản ứng Nhiệt Nhôm ($Al$ tác dụng với $Fe_2O_3$)</h4>
+                            <p id="exp-desc" class="text-sm text-slate-300 leading-relaxed">Hỗn hợp bột nhôm và sắt(III) oxide khi được đốt nóng cháy tỏa nhiệt cực mạnh (trên $2000^\circ C$), làm nóng chảy sắt hoàn toàn.</p>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                            <div class="bg-slate-950 p-3.5 rounded-lg border border-slate-800">
+                                <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-1">Dụng cụ & Hóa chất</span>
+                                <p id="exp-materials" class="text-xs text-slate-300">Bột $Al$, bột $Fe_2O_3$, dây magie mồi cháy, chậu cát khô.</p>
+                            </div>
+                            <div class="bg-slate-950 p-3.5 rounded-lg border border-slate-800">
+                                <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-1">Hiện tượng quan sát</span>
+                                <p id="exp-phenomenon" class="text-xs text-emerald-300">Phản ứng mãnh liệt, chớp sáng chói, có xỉ nóng chảy và sắt lỏng chảy xuống đáy.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 5: INTERACTIVE QUIZ -->
+                <div id="tab-quiz" class="tab-content space-y-4 hidden">
+                    <div class="flex justify-between items-center">
+                        <h3 class="font-bold text-lg text-slate-200 flex items-center">
+                            <i class="fa-solid fa-brain text-purple-400 mr-2"></i>Câu Hỏi Tương Tác Thông Minh
+                        </h3>
+                        <span id="quiz-score" class="text-xs font-mono bg-purple-500/20 text-purple-300 px-3 py-1 rounded-full border border-purple-500/30">Điểm: 0/0</span>
+                    </div>
+                    <div id="quiz-container" class="bg-slate-900/60 border border-slate-700/80 rounded-xl p-5 space-y-4">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <!-- Footer navigation inside card -->
+                <div class="pt-4 mt-6 border-t border-slate-700/60 flex justify-between items-center">
+                    <button onclick="navigateElement(-1)" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-xl text-xs font-semibold transition-all flex items-center">
+                        <i class="fa-solid fa-arrow-left mr-2"></i> Nguyên tố trước
+                    </button>
+                    <span id="nav-counter" class="text-xs text-slate-400 font-mono">1 / 12</span>
+                    <button onclick="navigateElement(1)" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-semibold transition-all flex items-center shadow-lg shadow-blue-600/30">
+                        Nguyên tố tiếp <i class="fa-solid fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900/90 border-t border-slate-800 text-center py-4 text-xs text-slate-400 mt-auto">
+        <p>Hệ thống học tập thông minh Hóa học phổ thông • Khảo sát các nguyên tố từ $Z = 13$ đến $Z = 24$</p>
+    </footer>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        // Database for elements 13 to 24
+        const elementsData = [
+            {
+                z: 13, symbol: "Al", name: "Nhôm (Aluminium)", mass: "27.0 u",
+                category: "Kim loại • Chu kỳ 3 • Nhóm IIIA",
+                config: "[Ne] 3s² 3p¹", shells: [2, 8, 3],
+                video: {
+                    title: "Hành trình của Nhôm từ quặng Bauxite đến vật liệu tương lai",
+                    desc: "Tóm tắt 75 giây khám phá tính chất nhẹ, bền, phản ứng nhiệt nhôm và ứng dụng cốt lõi trong đời sống.",
+                    script: "Chào mừng bạn đến với chuyên đề khám phá nguyên tố Nhôm, số hiệu nguyên tử 13, ký hiệu Al. Nhôm là kim loại màu trắng bạc, rất nhẹ, mềm và dễ kéo sợi. Trong công nghiệp, nhôm được dùng rộng rãi để chế tạo vỏ máy bay, ô tô và vật liệu xây dựng nhờ lớp màng oxit bảo vệ chống ăn mòn tuyệt vời. Trong y tế, hợp chất nhôm hydroxide được dùng làm thuốc kháng axit dạ dày. Phản ứng nhiệt nhôm giữa bột nhôm và sắt oxide tỏa nhiệt rất cao, dùng để hàn đường ray.",
+                    duration: "1:15"
+                },
+                industrial: "Nhôm được dùng rộng rãi trong ngành hàng không vũ trụ, chế tạo vỏ máy bay, ô tô, dây dẫn điện cao thế và vật liệu xây dựng nhờ đặc tính nhẹ, chống ăn mòn tốt.",
+                medical: "Hợp chất của nhôm (như aluminium hydroxide) được dùng làm thuốc kháng axit dạ dày (trị đau dạ dày), tá dược vaccine và chất kết tủa trong xử lý nước sạch.",
+                experiment: {
+                    title: "Phản ứng Nhiệt Nhôm ($Al + Fe_2O_3$)",
+                    desc: "Hỗn hợp bột nhôm và sắt(III) oxide khi được đốt nóng cháy tỏa nhiệt cực mạnh (trên 2000°C), làm nóng chảy hoàn toàn sắt.",
+                    materials: "Bột $Al$, bột $Fe_2O_3$, dây magie mồi cháy, chậu cát khô.",
+                    phenomenon: "Phản ứng mãnh liệt, chớp sáng chói, có xỉ nóng chảy và sắt lỏng chảy xuống đáy."
+                },
+                quiz: {
+                    question: "Nhôm thuộc chu kỳ mấy trong bảng tuần hoàn hóa học?",
+                    options: ["Chu kỳ 2", "Chu kỳ 3", "Chu kỳ 4", "Chu kỳ 5"],
+                    correct: 1,
+                    explanation: "Nhôm có số hiệu nguyên tử Z = 13, cấu hình electron 1s² 2s² 2p⁶ 3s² 3p¹ có 3 lớp electron nên thuộc Chu kỳ 3."
+                }
+            },
+            {
+                z: 14, symbol: "Si", name: "Silic (Silicon)", mass: "28.1 u",
+                category: "Á kim • Chu kỳ 3 • Nhóm IVA",
+                config: "[Ne] 3s² 3p²", shells: [2, 8, 4],
+                video: {
+                    title: "Silic - Trái tim của kỷ nguyên số và công nghệ bán dẫn",
+                    desc: "Khám phá cách Silic chuyển đổi từ cát thạch anh thành chất bán dẫn siêu tinh khiết vận hành chip máy tính.",
+                    script: "Khám phá nguyên tố Silic, số hiệu nguyên tử 14, ký hiệu Si. Silic là một á kim phổ biến thứ hai trong vỏ Trái Đất, có tính chất bán dẫn đặc trưng. Đây là vật liệu cốt lõi để sản xuất chip vi mạch điện tử, pin năng lượng mặt trời và các thiết bị công nghệ hiện đại. Trong y tế, silicone dẻo được ứng dụng an toàn trong các bộ phận cấy ghép và thiết bị phẫu thuật.",
+                    duration: "1:20"
+                },
+                industrial: "Nguyên liệu cốt lõi trong sản xuất chip bán dẫn, vi mạch điện tử, pin năng lượng mặt trời, thủy tinh, gốm sứ và ximăng.",
+                medical: "Silicone y tế được ứng dụng rộng rãi trong chế tạo van tim nhân tạo, ống thông tiểu, kính sát tròng và các thiết bị cấy ghép phẫu thuật thẩm mỹ.",
+                experiment: {
+                    title: "Điều chế Silic tinh khiết / Thủy tinh lỏng",
+                    desc: "Nung chảy cát trắng ($SiO_2$) với natri carbonate ($Na_2CO_3$) tạo thành thủy tinh lỏng ($Na_2SiO_3$).",
+                    materials: "Cát thạch anh mịn, $Na_2CO_3$ khan, đèn cồn, chén nung sứ.",
+                    phenomenon: "Hỗn hợp nóng chảy sủi bọt khí $CO_2$ và tạo thành chất rắn dạng thủy tinh hòa tan trong nước."
+                },
+                quiz: {
+                    question: "Silic được phân loại là nguyên tố gì trong bảng tuần hoàn?",
+                    options: ["Kim loại kiềm", "Kim loại chuyển tiếp", "Á kim", "Khí hiếm"],
+                    correct: 2,
+                    explanation: "Silic (Si) nằm ở đường ranh giới giữa kim loại và phi kim, mang tính chất trung gian nên được gọi là Á kim."
+                }
+            },
+            {
+                z: 15, symbol: "P", name: "Phốt pho (Phosphorus)", mass: "31.0 u",
+                category: "Phi kim • Chu kỳ 3 • Nhóm VA",
+                config: "[Ne] 3s² 3p³", shells: [2, 8, 5],
+                video: {
+                    title: "Phốt pho - Nguyên tố của sự sống và ánh sáng rực rỡ",
+                    desc: "Tìm hiểu phốt pho đỏ, phốt pho trắng, vai trò sinh học trong DNA, ATP và sản xuất diêm an toàn.",
+                    script: "Tìm hiểu về nguyên tố Phốt pho, số hiệu 15, ký hiệu P. Phốt pho tồn tại ở các dạng thù hình như phốt pho trắng hoạt động mạnh tự bốc cháy và phốt pho đỏ ổn định hơn. Trong cơ thể sống, phốt pho là thành phần cốt lõi của phân tử trữ năng lượng ATP và cấu trúc DNA. Trong công nghiệp, phốt pho được dùng để sản xuất phân bón phosphate và vỏ hộp diêm an toàn.",
+                    duration: "1:10"
+                },
+                industrial: "Sản xuất phân bón phosphate nông nghiệp, axit phosphoric, que diêm an toàn và chất phụ gia công nghiệp thực phẩm.",
+                medical: "Hợp chất phosphate thiết yếu cho quá trình chuyển hóa năng lượng tế bào (ATP), cấu trúc xương, răng và DNA trong cơ thể người.",
+                experiment: {
+                    title: "Tính chất tự bốc cháy của Phốt pho trắng",
+                    desc: "Phốt pho trắng tác dụng với oxi không khí ở nhiệt độ thường tỏa nhiệt và tự bốc cháy.",
+                    materials: "Mẫu nhỏ phốt pho trắng ngâm nước, dung dịch $CS_2$, chén sứ.",
+                    phenomenon: "Phốt pho trắng bốc cháy tạo khói trắng dày đặc là $P_2O_5$. (Lưu ý: Thí nghiệm nguy hiểm, biểu diễn mô phỏng)."
+                },
+                quiz: {
+                    question: "Thù hình nào của Phốt pho tự bốc cháy ở nhiệt độ thường trong không khí?",
+                    options: ["Phốt pho đỏ", "Phốt pho trắng", "Phốt pho đen", "Phốt pho tím"],
+                    correct: 1,
+                    explanation: "Phốt pho trắng rất hoạt động, nhiệt độ cháy thấp nên tự bốc cháy trong không khí ở khoảng 30°C."
+                }
+            },
+            {
+                z: 16, symbol: "S", name: "Lưu huỳnh (Sulfur)", mass: "32.1 u",
+                category: "Phi kim • Chu kỳ 3 • Nhóm VIA",
+                config: "[Ne] 3s² 3p⁴", shells: [2, 8, 6],
+                video: {
+                    title: "Lưu huỳnh - Sắc vàng núi lửa và axit của nền công nghiệp",
+                    desc: "Khám phá nguyên tố lưu huỳnh vàng rực, sản xuất axit sulfuric và công nghệ lưu hóa cao su.",
+                    script: "Giới thiệu nguyên tố Lưu huỳnh, số hiệu 16, ký hiệu S. Lưu huỳnh là chất rắn màu vàng, thường tìm thấy ở các vùng núi lửa. Hơn 85 phần trăm lượng lưu huỳnh được dùng để sản xuất axit sulfuric, hóa chất quan trọng số một của công nghiệp hóa chất. Lưu huỳnh cũng đóng vai trò thiết yếu trong quá trình lưu hóa cao su giúp tăng độ bền và sản xuất thuốc điều trị da liễu.",
+                    duration: "1:15"
+                },
+                industrial: "Sản xuất axit sulfuric (hóa chất cơ bản hàng đầu), lưu hóa cao su tăng độ bền, sản xuất thuốc trừ sâu và chất tẩy giấy.",
+                medical: "Được dùng trong các loại thuốc mỡ bôi da trị nấm, mụn trứng cá, bệnh vẩy nến và thành phần trong một số dược phẩm kháng sinh.",
+                experiment: {
+                    title: "Sắt tác dụng với Lưu huỳnh khi đun nóng",
+                    desc: "Trộn bột sắt và bột lưu huỳnh rồi đun nóng bằng đèn cồn.",
+                    materials: "Bột sắt, bột lưu huỳnh, ống nghiệm chịu nhiệt, đèn cồn.",
+                    phenomenon: "Phản ứng tỏa nhiệt mạnh, hỗn hợp sáng đỏ rực tạo ra khối rắn màu xám đen sắt(II) sulfide ($FeS$)."
+                },
+                quiz: {
+                    question: "Ứng dụng lớn nhất của Lưu huỳnh trong công nghiệp là để sản xuất chất nào?",
+                    options: ["Axit nitric", "Axit sulfuric", "Axit hydrochloric", "Xút ăn da"],
+                    correct: 1,
+                    explanation: "Hơn 85% lượng lưu huỳnh khai thác được dùng để sản xuất axit sulfuric ($H_2SO_4$), hóa chất quan trọng số một."
+                }
+            },
+            {
+                z: 17, symbol: "Cl", name: "Clo (Chlorine)", mass: "35.5 u",
+                category: "Phi kim (Halogen) • Chu kỳ 3 • Nhóm VIIA",
+                config: "[Ne] 3s² 3p⁵", shells: [2, 8, 7],
+                video: {
+                    title: "Clo - Khí độc màu lục vàng và chiến binh khử trùng nguồn nước",
+                    desc: "Tìm hiểu khí Clo độc hại, khả năng sát trùng mạnh mẽ và ứng dụng xử lý nước sạch đô thị.",
+                    script: "Khám phá nguyên tố Clo, số hiệu 17, ký hiệu Cl. Clo là chất khí màu vàng lục, mùi xốc nặng và có tính oxi hóa rất mạnh. Nhờ đặc tính sát trùng ưu việt, khí clo và các hợp chất của nó được sử dụng rộng rãi trong việc khử trùng nguồn nước sinh hoạt, xử lý nước hồ bơi và sản xuất chất dẻo PVC. Clo cũng là thành phần của muối ăn khi kết hợp với natri.",
+                    duration: "1:18"
+                },
+                industrial: "Sản xuất chất dẻo PVC, dung môi hữu cơ, chất tẩy trắng bột giấy, dệt nhuộm và khử trùng nguồn nước sinh hoạt, hồ bơi.",
+                medical: "Dung dịch nước muối sinh lý và các hợp chất chứa clo đóng vai trò quan trọng trong việc khử trùng thiết bị y tế và vết thương.",
+                experiment: {
+                    title: "Khí Clo tác dụng với Na (Natri) đun nóng",
+                    desc: "Đưa một mẩu natri nóng chảy vào bình chứa khí clo màu vàng lục.",
+                    materials: "Natri kim loại, bình khí Clo khô, thìa đốt hóa chất.",
+                    phenomenon: "Phản ứng mãnh liệt tạo ngọn lửa sáng chói và khói trắng dày đặc là các hạt tinh thể muối ăn ($NaCl$)."
+                },
+                quiz: {
+                    question: "Khí Clo có màu đặc trưng nào?",
+                    options: ["Không màu", "Màu nâu đỏ", "Màu vàng lục", "Màu tím hồng"],
+                    correct: 2,
+                    explanation: "Clo là chất khí ở điều kiện thường, có màu vàng lục đặc trưng và mùi xốc nặng."
+                }
+            },
+            {
+                z: 18, symbol: "Ar", name: "Argon", mass: "40.0 u",
+                category: "Khí hiếm • Chu kỳ 3 • Nhóm VIIIA",
+                config: "[Ne] 3s² 3p⁶", shells: [2, 8, 8],
+                video: {
+                    title: "Argon - Khí trơ thầm lặng thắp sáng bóng đèn và bảo quản vật liệu",
+                    desc: "Khám phá khí hiếm chiếm gần 1% khí quyển Trái Đất, tính trơ hóa học tuyệt đối và ứng dụng hàn.",
+                    script: "Khám phá nguyên tố Argon, số hiệu 18, ký hiệu Ar. Argon là khí hiếm chiếm khoảng một phần trăm thể tích khí quyển Trái Đất. Do có cấu hình electron bão hòa bền vững, argon hoàn toàn trơ về mặt hóa học ở điều kiện thường. Khí argon được bơm vào bóng đèn sợi đốt để ngăn tóc bóng đèn bị cháy, tạo môi trường trơ trong hàn kim loại cao cấp và ứng dụng trong y học laser mắt.",
+                    duration: "1:05"
+                },
+                industrial: "Dùng làm khí trơ trong bóng đèn sợi đốt (chống cháy tóc đèn), môi trường trơ trong hàn hồ quang kim loại và sản xuất thép tinh cao cấp.",
+                medical: "Dùng trong phẫu thuật mắt bằng laser (laser argon) để điều trị các bệnh lý võng mạc và cắt mô y tế chính xác.",
+                experiment: {
+                    title: "Phóng điện qua ống chứa khí Argon",
+                    desc: "Đặt ống phóng điện chứa khí Argon ở áp suất thấp dưới điện thế cao.",
+                    materials: "Ống nghiệm chứa khí Ar, máy phát cao thế cuộn Ruhmkorff.",
+                    phenomenon: "Khí Argon phát ra ánh sáng màu tím hoa cà hoặc xanh lam đặc trưng khi có dòng điện chạy qua."
+                },
+                quiz: {
+                    question: "Tại sao khí Argon lại rất trơ (ít phản ứng hóa học)?",
+                    options: ["Vì có 1 electron lớp ngoài cùng", "Vì có cấu hình electron bão hòa bền vững (8 electron lớp ngoài)", "Vì là kim loại nặng", "Vì nằm ở chu kỳ 1"],
+                    correct: 1,
+                    explanation: "Argon là khí hiếm thuộc nhóm VIIIA có 8 electron lớp ngoài cùng (octet bền vững) nên rất khó tham gia phản ứng hóa học."
+                }
+            },
+            {
+                z: 19, symbol: "K", name: "Kali (Potassium)", mass: "39.1 u",
+                category: "Kim loại kiềm • Chu kỳ 4 • Nhóm IA",
+                config: "[Ar] 4s¹", shells: [2, 8, 8, 1],
+                video: {
+                    title: "Kali - Kim loại mềm cắt bằng dao và ngọn lửa tím đặc trưng",
+                    desc: "Xem thí nghiệm phản ứng cực mạnh của Kali với nước, vai trò dinh dưỡng đối với thực vật.",
+                    script: "Tìm hiểu nguyên tố Kali, số hiệu 19, ký hiệu K. Kali là kim loại kiềm mềm, màu bạc, nhẹ đến mức có thể cắt bằng dao và nổi trên mặt nước. Kali phản ứng rất mãnh liệt với nước, giải phóng khí hydro và bốc cháy với ngọn lửa màu tím đặc trưng. Trong nông nghiệp và sinh học, ion kali là chất dinh dưỡng thiết yếu cho cây trồng và điều hòa nhịp tim, huyết áp ở người.",
+                    duration: "1:12"
+                },
+                industrial: "Sản xuất phân bón kali đa lượng nông nghiệp ($KCl, K_2SO_4$), thuốc súng, pháo hoa và xà phòng cao cấp.",
+                medical: "Ion Kali ($K^+$) là chất điện giải thiết yếu điều hòa huyết áp, nhịp tim và truyền dẫn xung điện thần kinh trong cơ thể người.",
+                experiment: {
+                    title: "Kali tác dụng mãnh liệt với nước",
+                    desc: "Thả mẩu nhỏ Kali vào chậu nước có nhỏ vài giọt phenolphtalein.",
+                    materials: "Kim loại Kali, chậu nước, dung dịch phenolphtalein, dao nhỏ.",
+                    phenomenon: "Kali chạy trên mặt nước, bốc cháy với ngọn lửa màu tím đặc trưng, dung dịch chuyển sang màu hồng đỏ."
+                },
+                quiz: {
+                    question: "Khi đốt cháy Kali hoặc muối Kali trên ngọn lửa đèn khí, ngọn lửa có màu gì?",
+                    options: ["Màu vàng tươi", "Màu đỏ gạch", "Màu tím hoa cà", "Màu xanh lá cây"],
+                    correct: 2,
+                    explanation: "Ion Kali khi cháy cho ngọn lửa màu tím (hoa cà) đặc trưng, dùng để nhận biết ion kali trong hóa học."
+                }
+            },
+            {
+                z: 20, symbol: "Ca", name: "Canxi (Calcium)", mass: "40.1 u",
+                category: "Kim loại kiềm thổ • Chu kỳ 4 • Nhóm IIA",
+                config: "[Ar] 4s²", shells: [2, 8, 8, 2],
+                video: {
+                    title: "Canxi - Xương sống của vật liệu xây dựng và cấu trúc sinh học",
+                    desc: "Khám phá đá vôi, vôi sống, xi măng và vai trò quyết định của canxi đối với hệ xương.",
+                    script: "Giới thiệu nguyên tố Canxi, số hiệu 20, ký hiệu Ca. Canxi là kim loại kiềm thổ màu xám bạc, là thành phần chính của đá vôi, thạch cao và xi măng phục vụ ngành xây dựng khổng lồ. Về mặt sinh học, canxi là nguyên tố vô cùng quan trọng cấu tạo nên hệ xương và răng chắc khỏe, đồng thời tham gia vào quá trình co cơ và đông máu trong cơ thể.",
+                    duration: "1:15"
+                },
+                industrial: "Sản xuất vật liệu xây dựng (vôi, xi măng, thạch cao), luyện kim (chất khử tách tạp chất) và sản xuất giấy.",
+                medical: "Cấu thành xương và răng, tham gia vào cơ chế đông máu, co cơ và truyền tín hiệu tế bào thần kinh ở người.",
+                experiment: {
+                    title: "Vôi sống tác dụng với nước (Tôi vôi)",
+                    desc: "Cho nước vào mẫu vôi sống ($CaO$) dạng cục.",
+                    materials: "Vôi sống $CaO$, nước cất, cốc thủy tinh, nhiệt kế.",
+                    phenomenon: "Phản ứng tỏa nhiệt rất mạnh (nước sôi), vôi rã thành bột mịn $Ca(OH)_2$ (vôi tôi)."
+                },
+                quiz: {
+                    question: "Công thức hóa học của đá vôi tự nhiên là gì?",
+                    options: ["$CaO$", "$Ca(OH)_2$", "$CaCO_3$", "$CaCl_2$"],
+                    correct: 2,
+                    explanation: "Đá vôi có thành phần chính là Canxi carbonate với công thức hóa học là $CaCO_3$."
+                }
+            },
+            {
+                z: 21, symbol: "Sc", name: "Scandi (Scandium)", mass: "45.0 u",
+                category: "Kim loại chuyển tiếp • Chu kỳ 4 • Nhóm IIIB",
+                config: "[Ar] 3d¹ 4s²", shells: [2, 8, 9, 2],
+                video: {
+                    title: "Scandi - Kim loại chuyển tiếp nhẹ tạo hợp kim siêu bền",
+                    desc: "Khám phá nguyên tố Scandi quý hiếm, ứng dụng trong khung xe đạp thể thao và hàng không.",
+                    script: "Khám phá nguyên tố Scandi, số hiệu 21, ký hiệu Sc. Scandi là kim loại chuyển tiếp nhẹ, có màu xám trắng bạc, mở đầu cho dãy kim loại d-block thứ nhất. Khi pha hợp kim với nhôm, scandi giúp tăng mạnh độ bền và khả năng chống chịu nhiệt, được ứng dụng rộng rãi trong chế tạo khung xe đạp đua cao cấp, gậy thể thao và các linh kiện hàng không vũ trụ.",
+                    duration: "1:08"
+                },
+                industrial: "Hợp kim Nhôm-Scandi được dùng trong chế tạo khung máy bay chiến đấu, gậy bóng chày cao cấp và khung xe đạp đua siêu nhẹ.",
+                medical: "Đồng vị phóng xạ Scandi-47 đang được nghiên cứu ứng dụng trong y học hạt nhân để chẩn đoán và điều trị ung thư.",
+                experiment: {
+                    title: "Scandi tác dụng với axit loãng",
+                    desc: "Cho mẫu Scandi nguyên chất tác dụng với dung dịch $HCl$ loãng.",
+                    materials: "Kim loại Scandi, dung dịch $HCl$ 1M, ống nghiệm.",
+                    phenomenon: "Kim loại tan dần, sủi bọt khí hydro mạnh và tạo dung dịch muối Scandi(III) không màu."
+                },
+                quiz: {
+                    question: "Scandi mở đầu cho dãy kim loại nào trong bảng tuần hoàn?",
+                    options: ["Kim loại kiềm", "Kim loại kiềm thổ", "Kim loại chuyển tiếp dãy thứ nhất (d-block)", "Họ Lantan"],
+                    correct: 2,
+                    explanation: "Scandi (Z = 21) là nguyên tố đầu tiên bắt đầu điền electron vào phân lớp 3d, mở đầu cho dãy kim loại chuyển tiếp thứ nhất."
+                }
+            },
+            {
+                z: 22, symbol: "Ti", name: "Titan (Titanium)", mass: "47.9 u",
+                category: "Kim loại chuyển tiếp • Chu kỳ 4 • Nhóm IVB",
+                config: "[Ar] 3d² 4s²", shells: [2, 8, 10, 2],
+                video: {
+                    title: "Titan - Á kim loại siêu bền, nhẹ và tương thích sinh học tuyệt đối",
+                    desc: "Tìm hiểu sức mạnh của Titan, tỷ lệ độ bền trên trọng lượng cao và khả năng cấy ghép y tế.",
+                    script: "Tìm hiểu về nguyên tố Titan, số hiệu 22, ký hiệu Ti. Titan nổi tiếng với tỷ lệ độ bền trên trọng lượng cực kỳ cao cùng khả năng chống ăn mòn tuyệt vời tương đương bạch kim. Nhờ đặc tính tương thích sinh học tuyệt đối, titan là vật liệu hoàn hảo để chế tạo khớp nhân tạo, răng giả và đinh vít phẫu thuật xương. Titan cũng là vật liệu chủ lực của ngành hàng không vũ trụ.",
+                    duration: "1:22"
+                },
+                industrial: "Chế tạo vỏ tàu vũ trụ, động cơ phản lực, áo giáp tàu ngầm và khung kiến trúc chịu lực cao nhờ độ bền vượt trội.",
+                medical: "Được dùng làm khớp nhân tạo (hông, gối), răng giả, đinh vít xương nhờ khả năng tương thích hoàn hảo với cơ thể người mà không bị đào thải.",
+                experiment: {
+                    title: "Titan dioxide ($TiO_2$) làm chất xúc tác quang hóa",
+                    desc: "Sơn phủ $TiO_2$ lên bề mặt kính và chiếu tia UV dưới ánh sáng mặt trời.",
+                    materials: "Bột $TiO_2$, đèn UV, nước bẩn mô phỏng.",
+                    phenomenon: "Dưới ánh sáng UV, $TiO_2$ phân hủy các chất hữu cơ bám trên bề mặt, tạo hiệu ứng tự làm sạch."
+                },
+                quiz: {
+                    question: "Tại sao Titan được ưa chuộng hàng đầu trong phẫu thuật cấy ghép xương khớp?",
+                    options: ["Vì giá thành rất rẻ", "Vì có độ tương thích sinh học cao và không bị cơ thể đào thải", "Vì mềm dễ uốn bằng tay", "Vì dễ tan trong nước"],
+                    correct: 1,
+                    explanation: "Titan có tính tương thích sinh học tuyệt vời với mô xương người, không gây dị ứng hay phản ứng miễn dịch."
+                }
+            },
+            {
+                z: 23, symbol: "V", name: "Vanadi (Vanadium)", mass: "50.9 u",
+                category: "Kim loại chuyển tiếp • Chu kỳ 4 • Nhóm VB",
+                config: "[Ar] 3d³ 4s²", shells: [2, 8, 11, 2],
+                video: {
+                    title: "Vanadi - Phụ gia thép cường độ cao và pin lưu trữ năng lượng lớn",
+                    desc: "Khám phá cách vanadi gia cường thép làm dụng cụ cắt gọt và pin dòng trữ điện năng lượng mặt trời.",
+                    script: "Giới thiệu nguyên tố Vanadi, số hiệu 23, ký hiệu V. Vanadi là kim loại chuyển tiếp có màu xám sáng, chủ yếu dùng làm chất phụ gia luyện kim để sản xuất thép hợp kim siêu cứng dùng cho trục khuỷu, bánh răng và dụng cụ cắt gọt. Các hợp chất của vanadi còn tạo ra dung dịch có nhiều màu sắc rực rỡ khi thay đổi mức oxi hóa và được ứng dụng trong pin lưu trữ năng lượng lớn.",
+                    duration: "1:10"
+                },
+                industrial: "Sản xuất thép hợp kim siêu cứng (làm trục khuỷu, bánh răng, cờ lê), chất xúc tác sản xuất axit sulfuric và pin lưu trữ điện lưới.",
+                medical: "Một số hợp chất của vanadi đang được nghiên cứu lâm sàng về khả năng hỗ trợ điều trị bệnh đái tháo đường (bắt chước insulin).",
+                experiment: {
+                    title: "Sự thay đổi màu sắc các mức oxy hóa của Vanadi",
+                    desc: "Khử dung dịch $V^{5+}$ (màu vàng) bằng kẽm trong môi trường axit qua các bậc oxi hóa.",
+                    materials: "Dung dịch amoni vanadat, kẽm hạt, $H_2SO_4$ loãng.",
+                    phenomenon: "Dung dịch chuyển đổi qua các màu sắc sặc sỡ: Vàng (V⁵⁺) -> Xanh dương (V⁴⁺) -> Xanh lá (V³⁺) -> Tím (V²⁺)."
+                },
+                quiz: {
+                    question: "Ứng dụng lớn nhất của Vanadi trong luyện kim là gì?",
+                    options: ["Làm dây tóc bóng đèn", "Chế tạo thép hợp kim cường độ cao", "Làm pin mặt trời đơn giản", "Sản xuất thủy tinh chịu nhiệt"],
+                    correct: 1,
+                    explanation: "Hơn 85% lượng vanadi sản xuất được dùng làm phụ gia hợp kim để tăng độ cứng, chịu lực và chống mài mòn cho thép."
+                }
+            },
+            {
+                z: 24, symbol: "Cr", name: "Crom (Chromium)", mass: "52.0 u",
+                category: "Kim loại chuyển tiếp • Chu kỳ 4 • Nhóm VIB",
+                config: "[Ar] 3d⁵ 4s¹ (Hiện tượng bán bão hòa)",
+                shells: [2, 8, 13, 1],
+                video: {
+                    title: "Crom - Kim loại cứng nhất thế giới và lớp mạ sáng bóng chống gỉ",
+                    desc: "Khám phá cấu hình electron đặc biệt của crom, thép không gỉ inox và hợp chất muối màu rực rỡ.",
+                    script: "Khám phá nguyên tố Crom, số hiệu 24, ký hiệu Cr. Crom nổi tiếng là một trong những kim loại cứng nhất tự nhiên, có cấu hình electron bán bão hòa đặc biệt ổn định. Khi pha vào sắt với tỷ lệ trên mười phần trăm, crom tạo thành thép không gỉ inox bền bỉ không bị ăn mòn. Lớp mạ crom sáng bóng còn giúp bảo vệ các chi tiết cơ khí và trang trí ô tô xe máy.",
+                    duration: "1:20"
+                },
+                industrial: "Sản xuất thép không gỉ (Inox chứa trên 10.5% Cr), mạ crom trang trí và bảo vệ kim loại, sản xuất chất màu sơn.",
+                medical: "Crom(III) là nguyên tố vi lượng cần thiết trong việc chuyển hóa glucose và hỗ trợ hoạt động của insulin trong cơ thể.",
+                experiment: {
+                    title: "'Núi lửa phun trào' từ Ammonium dichromate ($(NH_4)_2Cr_2O_7$)",
+                    desc: "Đốt nóng nhẹ chóp bột cam đỏ ammonium dichromate trong đĩa sứ.",
+                    materials: "(NH₄)₂Cr₂O_7 rắn, diêm châm.",
+                    phenomenon: "Phản ứng nhiệt phân mãnh liệt trông như núi lửa phun trào, tạo ra các thể bông màu xanh lá cây cồng kềnh ($Cr_2O_3$)."
+                },
+                quiz: {
+                    question: "Thép không gỉ (Inox) chứa thành phần nguyên tố chủ yếu nào kết hợp với sắt để không bị gỉ sét?",
+                    options: ["Crom", "Nhôm", "Đồng", "Kẽm"],
+                    correct: 0,
+                    explanation: "Inox là hợp kim của sắt chứa ít nhất 10.5% Crom, tạo lớp màng oxit mỏng trong suốt bảo vệ bề mặt khỏi ăn mòn."
+                }
+            }
+        ];
+
+        let currentIndex = 0; // 0 corresponds to Z=13 (Al)
+        let activeTab = 'video';
+        let speechSynth = window.speechSynthesis;
+        let speechUtterance = null;
+        let speechTimer = null;
+        let speechProgressVal = 0;
+        let quizScore = 0;
+        let quizAnswered = false;
+
+        // Initialize App
+        function initApp() {
+            renderNavPills();
+            renderElementGrid();
+            loadElementData(currentIndex);
+        }
+
+        function renderNavPills() {
+            const container = document.getElementById('nav-pills');
+            container.innerHTML = '';
+            elementsData.forEach((el, idx) => {
+                const btn = document.createElement('button');
+                btn.className = `px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 whitespace-nowrap ${idx === currentIndex ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30' : 'bg-slate-800/80 text-slate-300 hover:bg-slate-700 border border-slate-700/60'}`;
+                btn.innerHTML = `<span class="font-mono text-[10px] opacity-75">#${el.z}</span> ${el.symbol}`;
+                btn.onclick = () => selectElement(idx);
+                container.appendChild(btn);
+            });
+        }
+
+        function renderElementGrid() {
+            const container = document.getElementById('element-grid');
+            container.innerHTML = '';
+            elementsData.forEach((el, idx) => {
+                const card = document.createElement('div');
+                card.className = `element-btn cursor-pointer p-3 rounded-xl border transition-all flex flex-col justify-between ${idx === currentIndex ? 'bg-blue-600/20 border-blue-500 text-white shadow-lg shadow-blue-500/20' : 'bg-slate-900/60 border-slate-700/60 text-slate-300 hover:border-slate-500'}`;
+                card.onclick = () => selectElement(idx);
+                card.innerHTML = `
+                    <div class="flex justify-between items-center text-[10px] font-mono text-slate-400">
+                        <span>Z=${el.z}</span>
+                        <span>${el.mass}</span>
+                    </div>
+                    <div class="my-1 text-center">
+                        <span class="text-lg font-black tracking-wide">${el.symbol}</span>
+                    </div>
+                    <div class="text-[11px] truncate text-center font-medium">${el.name.split(' ')[0]}</div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function selectElement(idx) {
+            currentIndex = idx;
+            stopSpeechNarration();
+            loadElementData(currentIndex);
+            renderNavPills();
+            renderElementGrid();
+        }
+
+        function loadElementData(idx) {
+            const el = elementsData[idx];
+            
+            // Header info
+            document.getElementById('current-badge').innerText = `Z = ${el.z}`;
+            document.getElementById('bg-symbol').innerText = el.symbol;
+            document.getElementById('el-number').innerText = el.z;
+            document.getElementById('el-name').innerText = el.name;
+            document.getElementById('el-category').innerText = el.category;
+            document.getElementById('el-mass').innerText = el.mass;
+            document.getElementById('nav-counter').innerText = `${idx + 1} / ${elementsData.length}`;
+
+            // Quick Stats
+            const statsContainer = document.getElementById('quick-stats');
+            statsContainer.innerHTML = `
+                <div class="flex justify-between border-b border-slate-700/50 pb-2">
+                    <span class="text-slate-400">Số hiệu nguyên tử:</span>
+                    <strong class="text-white font-mono">${el.z}</strong>
+                </div>
+                <div class="flex justify-between border-b border-slate-700/50 pb-2">
+                    <span class="text-slate-400">Ký hiệu hóa học:</span>
+                    <strong class="text-blue-400 font-mono text-base">${el.symbol}</strong>
+                </div>
+                <div class="flex justify-between border-b border-slate-700/50 pb-2">
+                    <span class="text-slate-400">Cấu hình electron:</span>
+                    <strong class="text-emerald-300 font-mono text-xs">${el.config}</strong>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-slate-400">Phân loại:</span>
+                    <strong class="text-indigo-300 text-right text-xs">${el.category.split('•')[0]}</strong>
+                </div>
+            `;
+
+            // Video / Speech tab
+            document.getElementById('video-badge').innerText = `Tập ${el.z}/24: ${el.name}`;
+            document.getElementById('video-title').innerText = el.video.title;
+            document.getElementById('video-desc').innerText = el.video.desc;
+
+            // Uses tab
+            document.getElementById('use-industrial').innerText = el.industrial;
+            document.getElementById('use-medical').innerText = el.medical;
+
+            // 3D Model tab
+            document.getElementById('electron-config-text').innerText = `Cấu hình: ${el.config}`;
+            document.getElementById('model-symbol').innerText = el.symbol;
+            document.getElementById('model-z').innerText = `Z=${el.z}`;
+            document.getElementById('shell-1').innerText = `${el.shells[0] || 0} e⁻`;
+            document.getElementById('shell-2').innerText = `${el.shells[1] || 0} e⁻`;
+            document.getElementById('shell-3').innerText = `${el.shells[2] || 0} e⁻`;
+
+            // Experiment tab
+            document.getElementById('exp-title').innerText = el.experiment.title;
+            document.getElementById('exp-desc').innerText = el.experiment.desc;
+            document.getElementById('exp-materials').innerText = el.experiment.materials;
+            document.getElementById('exp-phenomenon').innerText = el.experiment.phenomenon;
+
+            // Quiz tab
+            quizAnswered = false;
+            renderQuiz(el.quiz);
+        }
+
+        function switchTab(tabName) {
+            activeTab = tabName;
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`tab-${tabName}`).classList.remove('hidden');
+
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                if (btn.dataset.tab === tabName) {
+                    btn.classList.add('border-blue-500', 'text-blue-400', 'bg-slate-800/40');
+                    btn.classList.remove('border-transparent', 'text-slate-400');
+                } else {
+                    btn.classList.remove('border-blue-500', 'text-blue-400', 'bg-slate-800/40');
+                    btn.classList.add('border-transparent', 'text-slate-400');
+                }
+            });
+        }
+
+        function navigateElement(direction) {
+            let newIdx = currentIndex + direction;
+            if (newIdx < 0) newIdx = elementsData.length - 1;
+            if (newIdx >= elementsData.length) newIdx = 0;
+            selectElement(newIdx);
+        }
+
+        // Web Speech API Narrator Controls
+        function toggleSpeechNarration() {
+            if (!speechSynth) {
+                alert("Trình duyệt của bạn không hỗ trợ tổng hợp giọng nói.");
+                return;
+            }
+
+            if (speechSynth.speaking) {
+                if (speechSynth.paused) {
+                    speechSynth.resume();
+                    document.getElementById('play-icon').className = "fa-solid fa-pause";
+                    document.getElementById('play-btn-text').innerText = "Tạm Dừng";
+                } else {
+                    speechSynth.pause();
+                    document.getElementById('play-icon').className = "fa-solid fa-play";
+                    document.getElementById('play-btn-text').innerText = "Tiếp Tục";
+                }
+                return;
+            }
+
+            const el = elementsData[currentIndex];
+            speechUtterance = new SpeechSynthesisUtterance(el.video.script);
+            speechUtterance.lang = 'vi-VN';
+            speechUtterance.rate = 0.95; // Pleasant pacing
+
+            speechUtterance.onstart = () => {
+                document.getElementById('play-icon').className = "fa-solid fa-pause";
+                document.getElementById('play-btn-text').innerText = "Tạm Dừng";
+                document.getElementById('speech-status-badge').innerHTML = '<i class="fa-solid fa-circle text-[8px] mr-1.5 animate-pulse text-emerald-400"></i>Đang phát thuyết trình...';
+                document.getElementById('audio-wave-icon').className = "fa-solid fa-microphone-lines text-8xl text-blue-500/40 scale-110 transition-all";
+                startSpeechTimer();
+            };
+
+            speechUtterance.onend = () => {
+                resetSpeechUI();
+            };
+
+            speechUtterance.onerror = () => {
+                resetSpeechUI();
+            };
+
+            speechSynth.speak(speechUtterance);
+        }
+
+        function stopSpeechNarration() {
+            if (speechSynth) {
+                speechSynth.cancel();
+            }
+            resetSpeechUI();
+        }
+
+        function resetSpeechUI() {
+            clearInterval(speechTimer);
+            speechProgressVal = 0;
+            updateSpeechProgressUI(0);
+            document.getElementById('play-icon').className = "fa-solid fa-play";
+            document.getElementById('play-btn-text').innerText = "Phát Thuyết Trình";
+            document.getElementById('speech-status-badge').innerHTML = '<i class="fa-solid fa-circle text-[8px] mr-1.5 text-emerald-400"></i>Sẵn sàng phát giọng đọc';
+            document.getElementById('audio-wave-icon').className = "fa-solid fa-microphone-lines text-8xl text-blue-500/10 transition-all";
+        }
+
+        function startSpeechTimer() {
+            clearInterval(speechTimer);
+            speechProgressVal = 0;
+            const totalDuration = 75; // seconds
+            speechTimer = setInterval(() => {
+                speechProgressVal += 1;
+                if (speechProgressVal > totalDuration) {
+                    speechProgressVal = totalDuration;
+                }
+                updateSpeechProgressUI(speechProgressVal);
+            }, 1000);
+        }
+
+        function updateSpeechProgressUI(currentSec) {
+            const percent = (currentSec / 75) * 100;
+            document.getElementById('video-progress').style.width = `${percent}%`;
+            const mins = Math.floor(currentSec / 60);
+            const secs = currentSec % 60;
+            document.getElementById('video-time').innerText = `${mins}:${secs < 10 ? '0' : ''}${secs} / 1:15`;
+        }
+
+        // Quiz Renderer
+        function renderQuiz(quiz) {
+            const container = document.getElementById('quiz-container');
+            container.innerHTML = `
+                <div class="space-y-3">
+                    <span class="text-xs font-semibold text-purple-300 uppercase tracking-wider">Thử thách kiến thức</span>
+                    <h4 class="text-base font-bold text-white">${quiz.question}</h4>
+                </div>
+                <div class="space-y-2.5 pt-2" id="quiz-options">
+                    ${quiz.options.map((opt, i) => `
+                        <button onclick="handleQuizAnswer(${i}, ${quiz.correct})" class="quiz-opt-btn w-full text-left px-4 py-3 rounded-xl bg-slate-950 border border-slate-800 hover:border-purple-500/50 text-sm text-slate-200 transition-all flex items-center justify-between">
+                            <span><strong class="text-purple-400 mr-2">${String.fromCharCode(65 + i)}.</strong> ${opt}</span>
+                        </button>
+                    `).join('')}
+                </div>
+                <div id="quiz-feedback" class="hidden mt-4 p-4 rounded-xl text-xs leading-relaxed"></div>
+            `;
+        }
+
+        function handleQuizAnswer(selected, correct) {
+            if (quizAnswered) return;
+            quizAnswered = true;
+
+            const optButtons = document.querySelectorAll('.quiz-opt-btn');
+            optButtons.forEach((btn, idx) => {
+                btn.disabled = true;
+                if (idx === correct) {
+                    btn.classList.remove('bg-slate-950', 'border-slate-800');
+                    btn.classList.add('bg-emerald-950/60', 'border-emerald-500', 'text-emerald-200');
+                } else if (idx === selected) {
+                    btn.classList.remove('bg-slate-950', 'border-slate-800');
+                    btn.classList.add('bg-rose-950/60', 'border-rose-500', 'text-rose-200');
+                }
+            });
+
+            const feedbackDiv = document.getElementById('quiz-feedback');
+            feedbackDiv.classList.remove('hidden');
+
+            const currentQuiz = elementsData[currentIndex].quiz;
+            if (selected === correct) {
+                quizScore++;
+                feedbackDiv.className = "mt-4 p-4 rounded-xl text-xs leading-relaxed bg-emerald-950/40 border border-emerald-500/40 text-emerald-200";
+                feedbackDiv.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-400 mr-1.5 text-sm"></i><strong>Chính xác!</strong> ${currentQuiz.explanation}`;
+            } else {
+                feedbackDiv.className = "mt-4 p-4 rounded-xl text-xs leading-relaxed bg-rose-950/40 border border-rose-500/40 text-rose-200";
+                feedbackDiv.innerHTML = `<i class="fa-solid fa-circle-xmark text-rose-400 mr-1.5 text-sm"></i><strong>Chưa chính xác.</strong> ${currentQuiz.explanation}`;
+            }
+            document.getElementById('quiz-score').innerText = `Điểm: ${quizScore}/${elementsData.length}`;
+        }
+
+        // Run on load
+        window.onload = initApp;
+    </script>
+</body>
+</html>
