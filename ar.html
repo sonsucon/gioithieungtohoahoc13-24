@@ -4,39 +4,298 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Argon - Hóa Học Trực Quan</title>
+    <!-- Thêm thư viện Three.js cho mô hình 3D -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #0b0f19; color: #fff; margin: 0; padding: 20px; }
-        .container { max-width: 800px; margin: 0 auto; background: rgba(255, 255, 255, 0.05); padding: 30px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.1); }
-        a { color: #60a5fa; text-decoration: none; }
-        a:hover { text-decoration: underline; }
-        .back-btn { display: inline-block; margin-bottom: 20px; font-weight: bold; }
-        h1 { color: #38bdf8; }
-        .card { background: rgba(0,0,0,0.3); padding: 20px; border-radius: 10px; margin-top: 15px; }
+        :root {
+            --bg-color: #0b0f19;
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --accent-color: #38bdf8;
+            --text-color: #f3f4f6;
+            --text-muted: #9ca3af;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--bg-color) 0%, #1e1b4b 100%);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+        header {
+            max-width: 850px;
+            margin: 0 auto 30px auto;
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 15px;
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .back-link:hover { text-decoration: underline; }
+        header span.badge {
+            background: rgba(56, 189, 248, 0.15);
+            color: var(--accent-color);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+        h1 {
+            color: var(--accent-color);
+            margin: 5px 0 10px 0;
+            font-size: 2.2rem;
+        }
+        h1 span { color: var(--text-muted); font-weight: 400; }
+        header p { color: var(--text-muted); margin: 0 0 15px 0; font-size: 1.05rem; }
+        .meta-tags span {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.08);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            margin-right: 8px;
+            margin-top: 5px;
+        }
+        main { max-width: 850px; margin: 0 auto; }
+        section {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            padding: 25px 30px;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 25px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+        h2 { color: var(--accent-color); margin-top: 0; font-size: 1.4rem; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
+        h3 { color: #60a5fa; margin-bottom: 8px; font-size: 1.1rem; }
+        .grid-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .stat-card {
+            background: rgba(0,0,0,0.25);
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.05);
+            text-align: center;
+        }
+        .stat-card small { color: var(--text-muted); display: block; font-size: 0.85rem; }
+        .stat-card b { color: var(--accent-color); font-size: 1.2rem; }
+        .primary-btn {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 10px;
+            transition: 0.3s;
+        }
+        .primary-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+        #canvas-3d { width: 100%; height: 260px; border-radius: 12px; background: rgba(0,0,0,0.4); margin-top: 10px; }
+        ul, ol { padding-left: 20px; }
+        li { margin-bottom: 8px; }
+        .warning-box {
+            background: rgba(239, 68, 68, 0.1);
+            border-left: 4px solid #ef4444;
+            padding: 12px 15px;
+            border-radius: 0 8px 8px 0;
+            margin: 15px 0;
+            font-size: 0.95rem;
+        }
+        .quiz-box {
+            background: rgba(59, 130, 246, 0.1);
+            border-left: 4px solid #3b82f6;
+            padding: 15px;
+            border-radius: 0 8px 8px 0;
+            margin-top: 15px;
+        }
+        footer {
+            max-width: 850px;
+            margin: 40px auto 20px auto;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--border-color);
+            padding-top: 20px;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <a href="index.html" class="back-btn">← Quay lại Bảng tuần hoàn chính</a>
-        
-        <h1>18 - Argon</h1>
-        <p><strong>Loại:</strong> Khí hiếm (Khơ-me) • <strong>Chu kỳ:</strong> 3 • <strong>Nhóm:</strong> VIIIA</p>
-        <p><strong>Khối lượng nguyên tử:</strong> 40.0 u | <strong>Cấu hình electron:</strong> [Ne] 3s² 3p⁶</p>
 
-        <div class="card">
-            <h3>🎬 Trình Thuyết Trình (60 - 90 giây)</h3>
-            <p>Argon là một chất khí không màu, không mùi, cực kỳ trơ về mặt hóa học, chiếm khoảng gần 1% khí quyển Trái Đất và đóng vai trò tạo môi trường bảo vệ trong công nghiệp.</p>
+    <header>
+        <a href="index.html" class="back-link">← Quay lại Bảng tuần hoàn chính</a>
+        <span class="badge">Phòng thí nghiệm nguyên tố · 18</span>
+        <h1>ARGON <span>(Ar)</span></h1>
+        <p>Khí hiếm phổ biến thứ ba trong khí quyển Trái Đất, hoàn toàn trơ về mặt hóa học và đóng vai trò thiết yếu trong kỹ thuật hàn hiện đại.</p>
+        <div class="meta-tags">
+            <span>Số hiệu nguyên tử: 18</span>
+            <span>Chu kì: 3</span>
+            <span>Nhóm: VIIIA</span>
         </div>
+    </header>
 
-        <div class="card">
-            <h3>🏭 Tác Dụng Y Tế & Công Nghiệp</h3>
-            <p><strong>Công nghiệp luyện kim & hàn:</strong> Dùng làm môi trường trơ để bảo vệ các mối hàn kim loại dễ bị oxy hóa (như nhôm, thép không gỉ) và sản xuất bóng đèn điện.<br>
-            <strong>Đời sống:</strong> Bơm vào khoảng trống giữa các lớp kính của cửa sổ cách nhiệt để giữ nhiệt độ tốt hơn.</p>
-        </div>
+    <main>
+        <!-- Hồ sơ nguyên tố -->
+        <section>
+            <h2>🔎 Hồ sơ nguyên tố</h2>
+            <p>Argon là nguyên tố hóa học có ký hiệu <b>Ar</b>. Ở điều kiện thường, argon là một chất khí không màu, không mùi, không vị và không độc hại.</p>
+            <div class="grid-stats">
+                <div class="stat-card">
+                    <small>Số hiệu nguyên tử</small>
+                    <b>18</b>
+                </div>
+                <div class="stat-card">
+                    <small>Khối lượng nguyên tử</small>
+                    <b>39,95 u</b>
+                </div>
+                <div class="stat-card">
+                    <small>Cấu hình electron</small>
+                    <b>[Ne] 3s<sup>2</sup> 3p<sup>6</sup></b>
+                </div>
+            </div>
+        </section>
 
-        <div class="card">
-            <h3>🧪 Thí Nghiệm & Mô Hình</h3>
-            <p>Do lớp vỏ electron ngoài cùng đã bão hòa (tám electron), Argon hầu như không phản ứng hóa học với bất kỳ chất nào ở điều kiện thường.</p>
-        </div>
-    </div>
+        <!-- Trình Thuyết Trình -->
+        <section>
+            <h2>🎬 Trình Thuyết Trình (60 - 90 giây)</h2>
+            <p>Bản trình chiếu có tích hợp tính năng đọc tự động bằng giọng nói của trình duyệt. Nhấn nút bên dưới để nghe bài thuyết trình ngắn gọn.</p>
+            <p id="speech-text" style="background: rgba(0,0,0,0.25); padding: 15px; border-radius: 8px; border-left: 3px solid #38bdf8;">
+                Xin chào! Hãy cùng khám phá argon, ký hiệu Ar, nguyên tố khí hiếm có số hiệu nguyên tử mười tám. Argon chiếm khoảng gần một phần trăm thể tích khí quyển Trái Đất, làm cho nó trở thành khí hiếm dồi dào nhất hành tinh chúng ta. Do lớp vỏ electron ngoài cùng đã bão hòa hoàn toàn tám electron, argon cực kỳ trơ lỳ và hầu như không tham gia phản ứng hóa học ở điều kiện thường. Nhờ tính chất này, argon được ứng dụng rộng rãi làm môi trường khí trơ bảo vệ trong công nghiệp luyện kim, hàn cắt kim loại cao cấp và sản xuất bóng đèn điện.
+            </p>
+            <button class="primary-btn" onclick="playSpeech()">▶ Nghe Thuyết Trình Tự Động</button>
+        </section>
+
+        <!-- Ứng dụng Y tế -->
+        <section>
+            <h2>🏥 Ứng dụng y tế và đời sống</h2>
+            <h3>Phẫu thuật y tế chuyên sâu</h3>
+            <p>Trong y học, tia laser khí argon được ứng dụng hiệu quả trong các ca phẫu thuật mắt (điều trị bệnh võng mạc) và hàn gắn các mô sinh học mà không gây tổn thương lớn đến các vùng xung quanh.</p>
+            <h3>Cách nhiệt và bảo quản</h3>
+            <p>Argon có độ dẫn nhiệt thấp, thường được bơm vào khoảng trống giữa các lớp kính của cửa sổ cách nhiệt cao cấp để giữ nhiệt độ phòng ổn định và tiết kiệm năng lượng.</p>
+        </section>
+
+        <!-- Ứng dụng Công nghiệp -->
+        <section>
+            <h2>🏭 Ứng dụng công nghiệp</h2>
+            <ul>
+                <li><b>Công nghiệp hàn kim loại:</b> Tạo ra lớp khí trơ bảo vệ vũng hàn khỏi bị oxy hóa hoặc tác dụng với nitơ trong không khí khi hàn các kim loại nhạy cảm như nhôm và thép không gỉ.</li>
+                <li><b>Sản xuất bóng đèn:</b> Được bơm vào bên trong bóng đèn sợi đốt truyền thống để ngăn chặn hiện tượng bay hơi của dây tóc vonfram, giúp kéo dài tuổi thọ bóng đèn.</li>
+                <li><b>Luyện kim đặc biệt:</b> Dùng làm môi trường trơ trong quá trình sản xuất các kim loại tinh khiết cao và silicon dùng cho công nghiệp chất bán dẫn.</li>
+            </ul>
+        </section>
+
+        <!-- Mô hình 3D -->
+        <section>
+            <h2>🪐 Mô hình nguyên tử 3D (minh họa)</h2>
+            <p>Mô hình trực quan mô phỏng cấu trúc hạt nhân và lớp vỏ electron hoàn chỉnh của nguyên tử Argon (18 proton, cấu hình 3 lớp electron: 2, 8, 8).</p>
+            <div id="canvas-3d"></div>
+        </section>
+
+        <!-- Thí nghiệm thực tế -->
+        <section>
+            <h2>🧫 Thí nghiệm thực tế: Tính trơ hóa học của Argon</h2>
+            <p><b>Mục tiêu:</b> Chứng minh sự ổn định và tính không phản ứng của khí hiếm.</p>
+            <div class="warning-box"><b>An toàn:</b> Khí argon không độc nhưng nặng hơn không khí, nếu tích tụ trong phòng kín có thể gây thiếu oxy ngạt thở. Phải làm việc trong khu vực thông thoáng hoặc thao tác trực tiếp dưới sự hướng dẫn của giáo viên.</div>
+            <h3>Cách quan sát cơ bản</h3>
+            <ol>
+                <li>Quan sát bóng đèn dây tóc hoặc các thiết bị hàn điện có sử dụng môi trường khí trơ argon.</li>
+                <li>Tiến hành thử nghiệm cho các mẩu kim loại kiềm hoặc chất dễ cháy vào môi trường khí argon (để thấy chúng không bị tác dụng hay cháy như trong không khí hoặc oxy nguyên chất).</li>
+            </ol>
+            <h3>Giải thích hiện tượng</h3>
+            <p>Vì cấu hình electron đạt trạng thái bền vững tối đa (bát tử với 8 electron lớp ngoài cùng), năng lượng ion hóa của argon rất cao nên nó không dễ dàng nhường, nhận hay chia sẻ electron để tạo liên kết hóa học.</p>
+        </section>
+
+        <!-- Câu hỏi tương tác -->
+        <section>
+            <h2>🧠 Câu hỏi tương tác thông minh</h2>
+            <div class="quiz-box">
+                <p><b>Hỏi:</b> Tại sao khí argon lại được chọn để bơm vào bên trong bóng đèn sợi đốt thay vì dùng không khí thông thường?</p>
+                <p style="color: #60a5fa; margin-top: 10px; cursor: pointer; font-weight: bold;" onclick="alert('Đáp án giải thích: Không khí chứa khí oxy sẽ làm cho dây tóc bóng đèn (làm bằng vonfram) bị cháy rụi ngay lập tức ở nhiệt độ cao. Trong khi đó, argon là khí trơ, không duy trì sự cháy và không phản ứng với vonfram, giúp bảo vệ dây tóc và ngăn chặn nó bay hơi, từ đó kéo dài tuổi thọ bóng đèn.')">👉 Bấm vào đây để xem đáp án / giải thích</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        Trang học tập Hóa học trực quan · Thiết kế phục vụ bài thuyết trình học sinh
+    </footer>
+
+    <script>
+        // Tính năng đọc thuyết trình bằng giọng nói
+        function playSpeech() {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const text = document.getElementById('speech-text').innerText;
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'vi-VN';
+                utterance.rate = 1.0;
+                window.speechSynthesis.speak(utterance);
+            } else {
+                alert('Trình duyệt của bạn không hỗ trợ tính năng đọc giọng nói tự động!');
+            }
+        }
+
+        // Mô hình 3D bằng Three.js
+        const container = document.getElementById('canvas-3d');
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(container.clientWidth, container.clientHeight);
+        container.appendChild(renderer.domElement);
+
+        // Hạt nhân trung tâm
+        const geometry = new THREE.SphereGeometry(0.7, 32, 32);
+        const material = new THREE.MeshBasicMaterial({ color: 0x38bdf8, wireframe: true });
+        const nucleus = new THREE.Mesh(geometry, material);
+        scene.add(nucleus);
+
+        // Vòng quỹ đạo electron mô phỏng (Argon có 3 lớp)
+        const orbits = [];
+        for(let i = 1; i <= 3; i++) {
+            let radius = 1.2 + i * 0.5;
+            const orbitGeo = new THREE.RingGeometry(radius - 0.02, radius + 0.02, 32);
+            const orbitMat = new THREE.MeshBasicMaterial({ color: 0x60a5fa, side: THREE.DoubleSide, transparent: true, opacity: 0.4 });
+            const orbit = new THREE.Mesh(orbitGeo, orbitMat);
+            orbit.rotation.x = Math.PI / (3 + i);
+            scene.add(orbit);
+            orbits.push(orbit);
+        }
+
+        camera.position.z = 4.5;
+
+        function animate() {
+            requestAnimationFrame(animate);
+            nucleus.rotation.x += 0.01;
+            nucleus.rotation.y += 0.01;
+            orbits.forEach((orbit, index) => {
+                orbit.rotation.z += (index + 1) * 0.003;
+            });
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // Responsive khi thay đổi kích thước màn hình
+        window.addEventListener('resize', () => {
+            camera.aspect = container.clientWidth / container.clientHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(container.clientWidth, container.clientHeight);
+        });
+    </script>
 </body>
 </html>
