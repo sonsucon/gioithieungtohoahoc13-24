@@ -182,6 +182,17 @@
             <button class="primary-btn" onclick="playSpeech()">▶ Nghe Thuyết Trình Tự Động</button>
         </section>
 
+        <!-- Video YouTube Trực Quan -->
+        <section>
+            <h2>📹 Video Khám Phá Trực Quan</h2>
+            <p>Video chi tiết về lịch sử, tính chất và ứng dụng thực tế của nguyên tố Argon:</p>
+            <div style="position: relative; width: 100%; padding-bottom: 56.25%; height: 0; margin-top: 15px; border-radius: 12px; overflow: hidden; background: #000; border: 1px solid rgba(255,255,255,0.1);">
+                <iframe src="https://www.youtube.com/embed/zVwg5caU35U" 
+                        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;" 
+                        allowfullscreen></iframe>
+            </div>
+        </section>
+
         <!-- Ứng dụng Y tế -->
         <section>
             <h2>🏥 Ứng dụng y tế và đời sống</h2>
@@ -251,7 +262,7 @@
             }
         }
 
-        // Mô hình 3D bằng Three.js
+        // Mô hình 3D bằng Three.js (Argon có 3 lớp electron)
         const container = document.getElementById('canvas-3d');
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
@@ -265,7 +276,7 @@
         const nucleus = new THREE.Mesh(geometry, material);
         scene.add(nucleus);
 
-        // Vòng quỹ đạo electron mô phỏng (Argon có 3 lớp)
+        // Vòng quỹ đạo electron mô phỏng
         const orbits = [];
         for(let i = 1; i <= 3; i++) {
             let radius = 1.2 + i * 0.5;
