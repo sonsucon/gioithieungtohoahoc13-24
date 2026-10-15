@@ -206,7 +206,7 @@
         <section>
             <h2>🏭 Ứng dụng công nghiệp và đời sống</h2>
             <ul>
-                <li><b>Vật liệu xây dựng:</b> Đá vôi ($CaCO_3$) là nguyên liệu chính để sản xuất vôi sống và xi măng phục vụ ngành xây dựng toàn cầu.</li>
+                <li><b>Vật liệu xây dựng:</b> Đá vôi (CaCO<sub>3</sub>) là nguyên liệu chính để sản xuất vôi sống và xi măng phục vụ ngành xây dựng toàn cầu.</li>
                 <li><b>Luyện kim:</b> Canxi được sử dụng làm chất khử mạnh để tách oxy và lưu huỳnh khi tinh chế các kim loại như uranium, zirconium và thép chất lượng cao.</li>
                 <li><b>Pháo hoa:</b> Các muối canxi khi cháy tạo ra ngọn lửa có màu đỏ cam đặc trưng, dùng trong pháo hoa nghệ thuật.</li>
             </ul>
@@ -227,17 +227,17 @@
             <h3>Cách thực hiện cơ bản</h3>
             <ol>
                 <li>Lấy một mẩu canxi nhỏ cho vào cốc chứa nước cất.</li>
-                <li>Quan sát hiện tượng sủi bọt khí (khí hydro $H_2$) và một phần canxi tan dần tạo dung dịch đục nhẹ do tạo thành canxi hydroxit ít tan.</li>
+                <li>Quan sát hiện tượng sủi bọt khí (khí hydro H<sub>2</sub>) và một phần canxi tan dần tạo dung dịch đục nhẹ do tạo thành canxi hydroxit ít tan.</li>
             </ol>
             <h3>Giải thích hiện tượng</h3>
-            <p>Canxi là kim loại hoạt động, khử nước ở nhiệt độ thường giải phóng khí hydro và tạo ra dung dịch bazơ ($Ca(OH)_2$).</p>
+            <p>Canxi là kim loại hoạt động, khử nước ở nhiệt độ thường giải phóng khí hydro và tạo ra dung dịch bazơ (Ca(OH)<sub>2</sub>).</p>
         </section>
 
         <!-- Câu hỏi tương tác -->
         <section>
             <h2>🧠 Câu hỏi tương tác thông minh</h2>
             <div class="quiz-box">
-                <p><b>Hỏi:</b> Tại sao nước cứng chứa nhiều ion canxi ($Ca^{2+}$) và magie ($Mg^{2+}$) lại gây hiện tượng đóng cặn trong ấm đun nước hoặc đường ống?</p>
+                <p><b>Hỏi:</b> Tại sao nước cứng chứa nhiều ion canxi (Ca<sup>2+</sup>) và magie (Mg<sup>2+</sup>) lại gây hiện tượng đóng cặn trong ấm đun nước hoặc đường ống?</p>
                 <p style="color: #60a5fa; margin-top: 10px; cursor: pointer; font-weight: bold;" onclick="alert('Đáp án giải thích: Khi đun sôi nước cứng, các ion canxi và magie kết hợp với ion bicarbonat hoặc carbonat có sẵn trong nước tạo thành các muối ít tan như canxi carbonat (CaCO3) và magie carbonat. Các muối này kết tủa và bám dính vào thành ấm hoặc đường ống, lâu ngày tạo thành lớp cặn cứng dày.')">👉 Bấm vào đây để xem đáp án / giải thích</p>
             </div>
         </section>
@@ -297,16 +297,4 @@
             orbits.forEach((orbit, index) => {
                 orbit.rotation.z += (index + 1) * 0.003;
             });
-            renderer.render(scene, camera);
-        }
-        animate();
-
-        // Responsive khi thay đổi kích thước màn hình
-        window.addEventListener('resize', () => {
-            camera.aspect = container.clientWidth / container.clientHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(container.clientWidth, container.clientHeight);
-        });
-    </script>
-</body>
-</html>
+            renderer.render(scene, camera
