@@ -1,1 +1,42 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scandi (Scandium) - Hóa Học Trực Quan</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #0b0f19; color: #fff; margin: 0; padding: 20px; }
+        .container { max-width: 800px; margin: 0 auto; background: rgba(255, 255, 255, 0.05); padding: 30px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.1); }
+        a { color: #60a5fa; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        .back-btn { display: inline-block; margin-bottom: 20px; font-weight: bold; }
+        h1 { color: #38bdf8; }
+        .card { background: rgba(0,0,0,0.3); padding: 20px; border-radius: 10px; margin-top: 15px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-btn">← Quay lại Bảng tuần hoàn chính</a>
+        
+        <h1>21 - Scandi (Scandium)</h1>
+        <p><strong>Loại:</strong> Kim loại chuyển tiếp • <strong>Chu kỳ:</strong> 4 • <strong>Nhóm:</strong> IIIB</p>
+        <p><strong>Khối lượng nguyên tử:</strong> 45.0 u | <strong>Cấu hình electron:</strong> [Ar] 3d¹ 4s²</p>
 
+        <div class="card">
+            <h3>🎬 Trình Thuyết Trình (60 - 90 giây)</h3>
+            <p>Scandi là một kim loại chuyển tiếp có màu trắng bạc, trọng lượng nhẹ và điểm nóng chảy rất cao, thường được thêm vào hợp kim nhôm để tăng cường độ bền cơ học.</p>
+        </div>
+
+        <div class="card">
+            <h3>🏭 Tác Dụng Y Tế & Công Nghiệp</h3>
+            <p><strong>Công nghiệp hàng không & thể thao:</strong> Hợp kim nhôm-scandi được ứng dụng rộng rãi trong chế tạo vỏ máy bay, khung xe đạp thể thao cao cấp và vợt tennis vì vừa nhẹ vừa cực kỳ bền chắc.<br>
+            <strong>Đời sống:</strong> Dùng trong sản xuất đèn pha cường độ cao (đèn halogen-scandium) mô phỏng ánh sáng ban ngày.</p>
+        </div>
+
+        <div class="card">
+            <h3>🧪 Thí Nghiệm & Mô Hình</h3>
+            <p>Scandi phản ứng chậm với nước nóng và dễ dàng hòa tan trong các dung dịch axit loãng để tạo ra muối màu hồng nhạt đặc trưng.</p>
+        </div>
+    </div>
+</body>
+</html>
