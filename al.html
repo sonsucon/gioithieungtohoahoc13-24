@@ -4,39 +4,122 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nhôm (Aluminium) - Hóa Học Trực Quan</title>
+    <!-- Thêm thư viện Three.js cho mô hình 3D -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #0b0f19; color: #fff; margin: 0; padding: 20px; }
-        .container { max-width: 800px; margin: 0 auto; background: rgba(255, 255, 255, 0.05); padding: 30px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.1); }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #0b0f19 0%, #1e1b4b 100%); color: #fff; margin: 0; padding: 20px; min-height: 100vh; }
+        .container { max-width: 850px; margin: 0 auto; background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); padding: 30px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37); }
         a { color: #60a5fa; text-decoration: none; }
         a:hover { text-decoration: underline; }
-        .back-btn { display: inline-block; margin-bottom: 20px; font-weight: bold; }
-        h1 { color: #38bdf8; }
-        .card { background: rgba(0,0,0,0.3); padding: 20px; border-radius: 10px; margin-top: 15px; }
+        .back-btn { display: inline-block; margin-bottom: 20px; font-weight: bold; color: #38bdf8; }
+        h1 { color: #38bdf8; margin-top: 5px; }
+        .card { background: rgba(0,0,0,0.3); padding: 20px; border-radius: 12px; margin-top: 20px; border: 1px solid rgba(255,255,255,0.05); }
+        .primary-btn { background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; margin-top: 10px; transition: 0.3s; }
+        .primary-btn:hover { opacity: 0.9; transform: translateY(-2px); }
+        #canvas-3d { width: 100%; height: 250px; border-radius: 10px; background: rgba(0,0,0,0.5); }
+        .quiz-box { background: rgba(59, 130, 246, 0.1); border-left: 4px solid #3b82f6; padding: 15px; margin-top: 10px; border-radius: 0 8px 8px 0; }
     </style>
 </head>
 <body>
     <div class="container">
         <a href="index.html" class="back-btn">← Quay lại Bảng tuần hoàn chính</a>
         
-        <h1>13 - Nhôm (Aluminium)</h1>
-        <p><strong>Loại:</strong> Kim loại • <strong>Chu kỳ:</strong> 3 • <strong>Nhóm:</strong> IIIA</p>
-        <p><strong>Khối lượng nguyên tử:</strong> 27.0 u | <strong>Cấu hình electron:</strong> [Ne] 3s² 3p¹</p>
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+            <div>
+                <span style="background: #3b82f6; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: bold;">Z = 13</span>
+                <h1>Nhôm (Aluminium)</h1>
+                <p><strong>Loại:</strong> Kim loại • <strong>Chu kỳ:</strong> 3 • <strong>Nhóm:</strong> IIIA</p>
+            </div>
+            <div style="text-align: right;">
+                <p><strong>Khối lượng:</strong> 27.0 u</p>
+                <p><strong>Cấu hình e:</strong> [Ne] 3s² 3p¹</p>
+            </div>
+        </div>
 
+        <!-- Phần 1: Thuyết trình âm thanh -->
         <div class="card">
             <h3>🎬 Trình Thuyết Trình (60 - 90 giây)</h3>
-            <p>Nhôm là kim loại phổ biến trong vỏ Trái Đất, có màu bạc sáng, nhẹ, chống ăn mòn tốt...</p>
+            <p id="speech-text">Nhôm là kim loại phổ biến nhất trong vỏ Trái Đất. Dù có mặt ở khắp mọi nơi dưới dạng quặng bauxite, nhưng trước thế kỷ 19, nhôm từng có giá trị đắt hơn cả vàng do công nghệ tách chiết cực kỳ khó khăn.</p>
+            <button class="primary-btn" onclick="playSpeech()">▶ Nghe Thuyết Trình Tự Động</button>
         </div>
 
+        <!-- Phần 2: Y tế & Công nghiệp -->
         <div class="card">
             <h3>🏭 Tác Dụng Y Tế & Công Nghiệp</h3>
-            <p><strong>Công nghiệp:</strong> Chế tạo vỏ máy bay, ô tô, vật liệu xây dựng do nhẹ và bền.<br>
-            <strong>Đời sống:</strong> Làm giấy bạc gói thực phẩm, lon nước ngọt.</p>
+            <ul>
+                <li><strong>Công nghiệp hàng không:</strong> Nhờ nhẹ và bền, hợp kim nhôm là vật liệu chủ lực chế tạo thân vỏ máy bay và tên lửa.</li>
+                <li><strong>Đời sống & Bao bì:</strong> Sản xuất lon nước ngọt, giấy bạc gói thực phẩm và vật liệu xây dựng.</li>
+                <li><strong>Y tế:</strong> Hợp chất nhôm hydroxit được dùng làm thuốc kháng axit dạ dày, hỗ trợ điều trị đau dạ dày.</li>
+            </ul>
         </div>
 
+        <!-- Phần 3: Mô hình 3D -->
         <div class="card">
-            <h3>🧪 Thí Nghiệm & Mô Hình</h3>
-            <p>Phản ứng nhiệt nhôm tỏa nhiệt cực mạnh, dùng để hàn đường ray tàu hỏa.</p>
+            <h3>🌐 Mô Hình Nguyên Tử 3D (Mô phỏng hạt nhân)</h3>
+            <div id="canvas-3d"></div>
+        </div>
+
+        <!-- Phần 4: Thí nghiệm thực tế -->
+        <div class="card">
+            <h3>🧪 Thí Nghiệm Thực Tế</h3>
+            <p><strong>Phản ứng nhiệt nhôm:</strong> Trộn bột nhôm với bột sắt(III) oxide rồi đốt cháy. Phản ứng tỏa nhiệt cực lớn (lên tới hơn 2000°C) làm nóng chảy sắt, được ứng dụng để hàn đường ray tàu hỏa ngay tại chỗ.</p>
+        </div>
+
+        <!-- Phần 5: Câu hỏi thông minh -->
+        <div class="card">
+            <h3>💡 Câu Hỏi Tương Tác Thông Minh</h3>
+            <div class="quiz-box">
+                <p><strong>Hỏi:</strong> Tại sao các đồ vật bằng nhôm để ngoài không khí lại rất bền vững và không bị ăn mòn sâu vào bên trong như sắt?</p>
+                <p style="color: #60a5fa; margin-top: 8px; cursor: pointer;" onclick="alert('Gợi ý: Nhôm tác dụng với oxy tạo ra một lớp màng oxit (Al2O3) mỏng, bền vững bảo vệ lớp nhôm bên trong khỏi bị oxy hóa tiếp.')">👉 Bấm vào đây để xem đáp án / gợi ý</p>
+            </div>
         </div>
     </div>
+
+    <script>
+        // Tính năng đọc thuyết trình bằng giọng nói của trình duyệt
+        function playSpeech() {
+            if ('speechSynthesis' in window) {
+                const text = document.getElementById('speech-text').innerText;
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'vi-VN';
+                utterance.rate = 1.0;
+                window.speechSynthesis.speak(utterance);
+            } else {
+                alert('Trình duyệt của bạn không hỗ trợ tính năng đọc giọng nói!');
+            }
+        }
+
+        // Mô hình 3D bằng Three.js
+        const container = document.getElementById('canvas-3d');
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(container.clientWidth, container.clientHeight);
+        container.appendChild(renderer.domElement);
+
+        // Vẽ hạt nhân nguyên tử ở giữa
+        const geometry = new THREE.SphereGeometry(0.8, 32, 32);
+        const material = new THREE.MeshBasicMaterial({ color: 0x38bdf8, wireframe: true });
+        const nucleus = new THREE.Mesh(geometry, material);
+        scene.add(nucleus);
+
+        // Vẽ vòng quỹ đạo electron mô phỏng
+        const orbitGeo = new THREE.RingGeometry(1.5, 1.52, 32);
+        const orbitMat = new THREE.MeshBasicMaterial({ color: 0x60a5fa, side: THREE.DoubleSide });
+        const orbit = new THREE.Mesh(orbitGeo, orbitMat);
+        orbit.rotation.x = Math.PI / 3;
+        scene.add(orbit);
+
+        camera.position.z = 4;
+
+        function animate() {
+            requestAnimationFrame(animate);
+            nucleus.rotation.x += 0.01;
+            nucleus.rotation.y += 0.01;
+            orbit.rotation.z += 0.005;
+            renderer.render(scene, camera);
+        }
+        animate();
+    </script>
 </body>
 </html>
