@@ -4,39 +4,309 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Canxi (Calcium) - Hóa Học Trực Quan</title>
+    <!-- Thêm thư viện Three.js cho mô hình 3D -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #0b0f19; color: #fff; margin: 0; padding: 20px; }
-        .container { max-width: 800px; margin: 0 auto; background: rgba(255, 255, 255, 0.05); padding: 30px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.1); }
-        a { color: #60a5fa; text-decoration: none; }
-        a:hover { text-decoration: underline; }
-        .back-btn { display: inline-block; margin-bottom: 20px; font-weight: bold; }
-        h1 { color: #38bdf8; }
-        .card { background: rgba(0,0,0,0.3); padding: 20px; border-radius: 10px; margin-top: 15px; }
+        :root {
+            --bg-color: #0b0f19;
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --accent-color: #38bdf8;
+            --text-color: #f3f4f6;
+            --text-muted: #9ca3af;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--bg-color) 0%, #1e1b4b 100%);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+        header {
+            max-width: 850px;
+            margin: 0 auto 30px auto;
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 15px;
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .back-link:hover { text-decoration: underline; }
+        header span.badge {
+            background: rgba(56, 189, 248, 0.15);
+            color: var(--accent-color);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+        h1 {
+            color: var(--accent-color);
+            margin: 5px 0 10px 0;
+            font-size: 2.2rem;
+        }
+        h1 span { color: var(--text-muted); font-weight: 400; }
+        header p { color: var(--text-muted); margin: 0 0 15px 0; font-size: 1.05rem; }
+        .meta-tags span {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.08);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            margin-right: 8px;
+            margin-top: 5px;
+        }
+        main { max-width: 850px; margin: 0 auto; }
+        section {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            padding: 25px 30px;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 25px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+        h2 { color: var(--accent-color); margin-top: 0; font-size: 1.4rem; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
+        h3 { color: #60a5fa; margin-bottom: 8px; font-size: 1.1rem; }
+        .grid-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .stat-card {
+            background: rgba(0,0,0,0.25);
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.05);
+            text-align: center;
+        }
+        .stat-card small { color: var(--text-muted); display: block; font-size: 0.85rem; }
+        .stat-card b { color: var(--accent-color); font-size: 1.2rem; }
+        .primary-btn {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 10px;
+            transition: 0.3s;
+        }
+        .primary-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+        #canvas-3d { width: 100%; height: 260px; border-radius: 12px; background: rgba(0,0,0,0.4); margin-top: 10px; }
+        ul, ol { padding-left: 20px; }
+        li { margin-bottom: 8px; }
+        .warning-box {
+            background: rgba(239, 68, 68, 0.1);
+            border-left: 4px solid #ef4444;
+            padding: 12px 15px;
+            border-radius: 0 8px 8px 0;
+            margin: 15px 0;
+            font-size: 0.95rem;
+        }
+        .quiz-box {
+            background: rgba(59, 130, 246, 0.1);
+            border-left: 4px solid #3b82f6;
+            padding: 15px;
+            border-radius: 0 8px 8px 0;
+            margin-top: 15px;
+        }
+        footer {
+            max-width: 850px;
+            margin: 40px auto 20px auto;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--border-color);
+            padding-top: 20px;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <a href="index.html" class="back-btn">← Quay lại Bảng tuần hoàn chính</a>
-        
-        <h1>20 - Canxi (Calcium)</h1>
-        <p><strong>Loại:</strong> Kim loại kiềm thổ • <strong>Chu kỳ:</strong> 4 • <strong>Nhóm:</strong> IIA</p>
-        <p><strong>Khối lượng nguyên tử:</strong> 40.1 u | <strong>Cấu hình electron:</strong> [Ar] 4s²</p>
 
-        <div class="card">
-            <h3>🎬 Trình Thuyết Trình (60 - 90 giây)</h3>
-            <p>Canxi là kim loại màu bạc, khá mềm, phản ứng với nước tạo ra dung dịch bazơ và đóng vai trò sinh học cực kỳ trọng yếu cấu thành nên xương và răng của động vật.</p>
+    <header>
+        <a href="index.html" class="back-link">← Quay lại Bảng tuần hoàn chính</a>
+        <span class="badge">Phòng thí nghiệm nguyên tố · 20</span>
+        <h1>CANXI <span>(Ca)</span></h1>
+        <p>Kim loại kiềm thổ thiết yếu cho sự sống, cấu tạo nên hệ xương vững chắc và đóng vai trò quan trọng trong ngành xây dựng và công nghiệp.</p>
+        <div class="meta-tags">
+            <span>Số hiệu nguyên tử: 20</span>
+            <span>Chu kì: 4</span>
+            <span>Nhóm: IIA</span>
         </div>
+    </header>
 
-        <div class="card">
-            <h3>🏭 Tác Dụng Y Tế & Công Nghiệp</h3>
-            <p><strong>Công nghiệp xây dựng:</strong> Hợp chất như vôi sống ($CaO$) và đá vôi ($CaCO_3$) là nguyên liệu cốt lõi để sản xuất xi măng, bê tông và vật liệu xây dựng.<br>
-            <strong>Y tế & Sinh học:</strong> Cung cấp khoáng chất thiết yếu giúp phát triển hệ xương, răng chắc khỏe, đồng thời hỗ trợ quá trình đông máu và co cơ.</p>
-        </div>
+    <main>
+        <!-- Hồ sơ nguyên tố -->
+        <section>
+            <h2>🔎 Hồ sơ nguyên tố</h2>
+            <p>Canxi (Calcium) là nguyên tố hóa học có ký hiệu <b>Ca</b>. Ở dạng đơn chất, canxi là một kim loại màu bạc, khá mềm và phản ứng mạnh với nước.</p>
+            <div class="grid-stats">
+                <div class="stat-card">
+                    <small>Số hiệu nguyên tử</small>
+                    <b>20</b>
+                </div>
+                <div class="stat-card">
+                    <small>Khối lượng nguyên tử</small>
+                    <b>40,08 u</b>
+                </div>
+                <div class="stat-card">
+                    <small>Cấu hình electron</small>
+                    <b>[Ar] 4s<sup>2</sup></b>
+                </div>
+            </div>
+        </section>
 
-        <div class="card">
-            <h3>🧪 Thí Nghiệm & Mô Hình</h3>
-            <p>Canxi tác dụng với nước tạo ra khí hydro và dung dịch canxi hydroxit ($Ca(OH)_2$), dùng nước vôi trong để nhận biết khí carbon dioxide ($CO_2$).</p>
-        </div>
-    </div>
+        <!-- Trình Thuyết Trình -->
+        <section>
+            <h2>🎬 Trình Thuyết Trình (60 - 90 giây)</h2>
+            <p>Bản trình chiếu có tích hợp tính năng đọc tự động bằng giọng nói của trình duyệt. Nhấn nút bên dưới để nghe bài thuyết trình ngắn gọn.</p>
+            <p id="speech-text" style="background: rgba(0,0,0,0.25); padding: 15px; border-radius: 8px; border-left: 3px solid #38bdf8;">
+                Xin chào! Hãy cùng khám phá canxi, ký hiệu Ca, nguyên tố kim loại kiềm thổ có số hiệu nguyên tử hai mươi. Canxi là nguyên tố phổ biến thứ năm trong vỏ Trái Đất, tồn tại chủ yếu ở dạng hợp chất như đá vôi, phấn và đá cẩm thạch. Các hợp chất của canxi đã được con người sử dụng từ thời cổ đại trong xây dựng và nông nghiệp. Canxi đóng vai trò tối quan trọng đối với cơ thể sinh vật, là thành phần chính cấu tạo nên xương và răng của động vật, đồng thời tham gia vào các quá trình sinh hóa tế bào. Trong công nghiệp, canxi được dùng làm chất khử để luyện kim và sản xuất vật liệu xây dựng như vữa và xi măng.
+            </p>
+            <button class="primary-btn" onclick="playSpeech()">▶ Nghe Thuyết Trình Tự Động</button>
+        </section>
+
+        <!-- Video YouTube Trực Quan -->
+        <section>
+            <h2>📹 Video Khám Phá Trực Quan</h2>
+            <p>Video chi tiết về tính chất hóa học, cấu trúc và ứng dụng thực tế của nguyên tố Canxi:</p>
+            <div style="position: relative; width: 100%; padding-bottom: 56.25%; height: 0; margin-top: 15px; border-radius: 12px; overflow: hidden; background: #000; border: 1px solid rgba(255,255,255,0.1);">
+                <iframe src="https://www.youtube.com/embed/3kbK3iP1sBI" 
+                        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;" 
+                        allowfullscreen></iframe>
+            </div>
+        </section>
+
+        <!-- Ứng dụng Y tế và Sức khỏe -->
+        <section>
+            <h2>🏥 Ứng dụng y tế và sức khỏe sinh học</h2>
+            <h3>Cấu trúc xương và răng</h3>
+            <p>Canxi phosphat và canxi carbonat là thành phần khoáng chất chủ yếu giúp xương và răng chắc khỏe, đồng thời hỗ trợ sự phát triển cơ bắp và truyền tín hiệu thần kinh.</p>
+            <h3>Chẩn đoán hình ảnh</h3>
+            <p>Trong y học, hình ảnh tích tụ canxi ở một số mô (như xương hoặc tổn thương mô mềm) giúp các bác sĩ dễ dàng phát hiện các bất thường thông qua tia X hoặc chụp cắt lớp CT.</p>
+        </section>
+
+        <!-- Ứng dụng Công nghiệp -->
+        <section>
+            <h2>🏭 Ứng dụng công nghiệp và đời sống</h2>
+            <ul>
+                <li><b>Vật liệu xây dựng:</b> Đá vôi ($CaCO_3$) là nguyên liệu chính để sản xuất vôi sống và xi măng phục vụ ngành xây dựng toàn cầu.</li>
+                <li><b>Luyện kim:</b> Canxi được sử dụng làm chất khử mạnh để tách oxy và lưu huỳnh khi tinh chế các kim loại như uranium, zirconium và thép chất lượng cao.</li>
+                <li><b>Pháo hoa:</b> Các muối canxi khi cháy tạo ra ngọn lửa có màu đỏ cam đặc trưng, dùng trong pháo hoa nghệ thuật.</li>
+            </ul>
+        </section>
+
+        <!-- Mô hình 3D -->
+        <section>
+            <h2>🪐 Mô hình nguyên tử 3D (minh họa)</h2>
+            <p>Mô hình trực quan mô phỏng cấu trúc hạt nhân và 4 lớp electron của nguyên tử Canxi (20 proton, cấu hình electron các lớp: 2, 8, 8, 2).</p>
+            <div id="canvas-3d"></div>
+        </section>
+
+        <!-- Thí nghiệm thực tế -->
+        <section>
+            <h2>🧫 Thí nghiệm thực tế: Canxi phản ứng với nước</h2>
+            <p><b>Mục tiêu:</b> Quan sát tính khử và mức độ hoạt động hóa học của kim loại kiềm thổ.</p>
+            <div class="warning-box"><b>An toàn:</b> Phản ứng sinh ra khí hydro có thể gây cháy nổ nhẹ, dung dịch tạo thành có tính kiềm mạnh gây bỏng da. Phải đeo kính bảo hộ, găng tay và thực hiện dưới sự giám sát của giáo viên.</div>
+            <h3>Cách thực hiện cơ bản</h3>
+            <ol>
+                <li>Lấy một mẩu canxi nhỏ cho vào cốc chứa nước cất.</li>
+                <li>Quan sát hiện tượng sủi bọt khí (khí hydro $H_2$) và một phần canxi tan dần tạo dung dịch đục nhẹ do tạo thành canxi hydroxit ít tan.</li>
+            </ol>
+            <h3>Giải thích hiện tượng</h3>
+            <p>Canxi là kim loại hoạt động, khử nước ở nhiệt độ thường giải phóng khí hydro và tạo ra dung dịch bazơ ($Ca(OH)_2$).</p>
+        </section>
+
+        <!-- Câu hỏi tương tác -->
+        <section>
+            <h2>🧠 Câu hỏi tương tác thông minh</h2>
+            <div class="quiz-box">
+                <p><b>Hỏi:</b> Tại sao nước cứng chứa nhiều ion canxi ($Ca^{2+}$) và magie ($Mg^{2+}$) lại gây hiện tượng đóng cặn trong ấm đun nước hoặc đường ống?</p>
+                <p style="color: #60a5fa; margin-top: 10px; cursor: pointer; font-weight: bold;" onclick="alert('Đáp án giải thích: Khi đun sôi nước cứng, các ion canxi và magie kết hợp với ion bicarbonat hoặc carbonat có sẵn trong nước tạo thành các muối ít tan như canxi carbonat (CaCO3) và magie carbonat. Các muối này kết tủa và bám dính vào thành ấm hoặc đường ống, lâu ngày tạo thành lớp cặn cứng dày.')">👉 Bấm vào đây để xem đáp án / giải thích</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        Trang học tập Hóa học trực quan · Thiết kế phục vụ bài thuyết trình học sinh
+    </footer>
+
+    <script>
+        // Tính năng đọc thuyết trình bằng giọng nói
+        function playSpeech() {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const text = document.getElementById('speech-text').innerText;
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'vi-VN';
+                utterance.rate = 1.0;
+                window.speechSynthesis.speak(utterance);
+            } else {
+                alert('Trình duyệt của bạn không hỗ trợ tính năng đọc giọng nói tự động!');
+            }
+        }
+
+        // Mô hình 3D bằng Three.js (Canxi có 4 lớp electron: 2, 8, 8, 2)
+        const container = document.getElementById('canvas-3d');
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(container.clientWidth, container.clientHeight);
+        container.appendChild(renderer.domElement);
+
+        // Hạt nhân trung tâm
+        const geometry = new THREE.SphereGeometry(0.7, 32, 32);
+        const material = new THREE.MeshBasicMaterial({ color: 0x38bdf8, wireframe: true });
+        const nucleus = new THREE.Mesh(geometry, material);
+        scene.add(nucleus);
+
+        // Vòng quỹ đạo electron mô phỏng (4 lớp)
+        const orbits = [];
+        for(let i = 1; i <= 4; i++) {
+            let radius = 1.1 + i * 0.45;
+            const orbitGeo = new THREE.RingGeometry(radius - 0.02, radius + 0.02, 32);
+            const orbitMat = new THREE.MeshBasicMaterial({ color: 0x60a5fa, side: THREE.DoubleSide, transparent: true, opacity: 0.4 });
+            const orbit = new THREE.Mesh(orbitGeo, orbitMat);
+            orbit.rotation.x = Math.PI / (3 + i);
+            scene.add(orbit);
+            orbits.push(orbit);
+        }
+
+        camera.position.z = 4.8;
+
+        function animate() {
+            requestAnimationFrame(animate);
+            nucleus.rotation.x += 0.01;
+            nucleus.rotation.y += 0.01;
+            orbits.forEach((orbit, index) => {
+                orbit.rotation.z += (index + 1) * 0.003;
+            });
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // Responsive khi thay đổi kích thước màn hình
+        window.addEventListener('resize', () => {
+            camera.aspect = container.clientWidth / container.clientHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(container.clientWidth, container.clientHeight);
+        });
+    </script>
 </body>
 </html>
