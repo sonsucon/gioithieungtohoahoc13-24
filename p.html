@@ -3,40 +3,310 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Phốt pho (Phosphorus) - Hóa Học Trực Quan</title>
+    <title>Photpho (Phosphorus) - Hóa Học Trực Quan</title>
+    <!-- Thêm thư viện Three.js cho mô hình 3D -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #0b0f19; color: #fff; margin: 0; padding: 20px; }
-        .container { max-width: 800px; margin: 0 auto; background: rgba(255, 255, 255, 0.05); padding: 30px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.1); }
-        a { color: #60a5fa; text-decoration: none; }
-        a:hover { text-decoration: underline; }
-        .back-btn { display: inline-block; margin-bottom: 20px; font-weight: bold; }
-        h1 { color: #38bdf8; }
-        .card { background: rgba(0,0,0,0.3); padding: 20px; border-radius: 10px; margin-top: 15px; }
+        :root {
+            --bg-color: #0b0f19;
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --accent-color: #38bdf8;
+            --text-color: #f3f4f6;
+            --text-muted: #9ca3af;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--bg-color) 0%, #1e1b4b 100%);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+        header {
+            max-width: 850px;
+            margin: 0 auto 30px auto;
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 15px;
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .back-link:hover { text-decoration: underline; }
+        header span.badge {
+            background: rgba(56, 189, 248, 0.15);
+            color: var(--accent-color);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+        h1 {
+            color: var(--accent-color);
+            margin: 5px 0 10px 0;
+            font-size: 2.2rem;
+        }
+        h1 span { color: var(--text-muted); font-weight: 400; }
+        header p { color: var(--text-muted); margin: 0 0 15px 0; font-size: 1.05rem; }
+        .meta-tags span {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.08);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            margin-right: 8px;
+            margin-top: 5px;
+        }
+        main { max-width: 850px; margin: 0 auto; }
+        section {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            padding: 25px 30px;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 25px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+        h2 { color: var(--accent-color); margin-top: 0; font-size: 1.4rem; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
+        h3 { color: #60a5fa; margin-bottom: 8px; font-size: 1.1rem; }
+        .grid-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .stat-card {
+            background: rgba(0,0,0,0.25);
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.05);
+            text-align: center;
+        }
+        .stat-card small { color: var(--text-muted); display: block; font-size: 0.85rem; }
+        .stat-card b { color: var(--accent-color); font-size: 1.2rem; }
+        .primary-btn {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 10px;
+            transition: 0.3s;
+        }
+        .primary-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+        #canvas-3d { width: 100%; height: 260px; border-radius: 12px; background: rgba(0,0,0,0.4); margin-top: 10px; }
+        ul, ol { padding-left: 20px; }
+        li { margin-bottom: 8px; }
+        .warning-box {
+            background: rgba(239, 68, 68, 0.1);
+            border-left: 4px solid #ef4444;
+            padding: 12px 15px;
+            border-radius: 0 8px 8px 0;
+            margin: 15px 0;
+            font-size: 0.95rem;
+        }
+        .quiz-box {
+            background: rgba(59, 130, 246, 0.1);
+            border-left: 4px solid #3b82f6;
+            padding: 15px;
+            border-radius: 0 8px 8px 0;
+            margin-top: 15px;
+        }
+        footer {
+            max-width: 850px;
+            margin: 40px auto 20px auto;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--border-color);
+            padding-top: 20px;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <a href="index.html" class="back-btn">← Quay lại Bảng tuần hoàn chính</a>
-        
-        <h1>15 - Phốt pho (Phosphorus)</h1>
-        <p><strong>Loại:</strong> Phi kim • <strong>Chu kỳ:</strong> 3 • <strong>Nhóm:</strong> VA</p>
-        <p><strong>Khối lượng nguyên tử:</strong> 31.0 u | <strong>Cấu hình electron:</strong> [Ne] 3s² 3p³</p>
 
-        <div class="card">
-            <h3>🎬 Trình Thuyết Trình (60 - 90 giây)</h3>
-            <p>Phốt pho là nguyên tố thiết yếu cho sự sống, tồn tại ở nhiều dạng thù hình khác nhau (phốt pho đỏ, phốt pho trắng) với tính chất hóa học hoạt động mạnh.</p>
+    <header>
+        <a href="index.html" class="back-link">← Quay lại Bảng tuần hoàn chính</a>
+        <span class="badge">Phòng thí nghiệm nguyên tố · 15</span>
+        <h1>PHOTPHO <span>(Phosphorus)</span></h1>
+        <p>Nguyên tố phi kim đa dạng thù hình, phát quang trong bóng tối, đóng vai trò sinh học thiết yếu cho ADN và sự sống.</p>
+        <div class="meta-tags">
+            <span>Số hiệu nguyên tử: 15</span>
+            <span>Chu kì: 3</span>
+            <span>Nhóm: VA</span>
         </div>
+    </header>
 
-        <div class="card">
-            <h3>🏭 Tác Dụng Y Tế & Công Nghiệp</h3>
-            <p><strong>Nông nghiệp & Công nghiệp:</strong> Ứng dụng chủ yếu để sản xuất phân bón phosphate, chất tẩy rửa và sản xuất diêm an toàn (phốt pho đỏ).<br>
-            <strong>Sinh học & Y tế:</strong> Là thành phần cốt lõi của DNA, RNA, màng tế bào và xương khớp trong cơ thể sống.</p>
-        </div>
+    <main>
+        <!-- Hồ sơ nguyên tố -->
+        <section>
+            <h2>🔎 Hồ sơ nguyên tố</h2>
+            <p>Photpho là nguyên tố hóa học có ký hiệu <b>P</b>. Trong tự nhiên, photpho không tồn tại ở dạng tự do do hoạt động hóa học mạnh, mà chủ yếu tập trung trong các khoáng vật photphat.</p>
+            <div class="grid-stats">
+                <div class="stat-card">
+                    <small>Số hiệu nguyên tử</small>
+                    <b>15</b>
+                </div>
+                <div class="stat-card">
+                    <small>Khối lượng nguyên tử</small>
+                    <b>30,97 u</b>
+                </div>
+                <div class="stat-card">
+                    <small>Cấu hình electron</small>
+                    <b>[Ne] 3s<sup>2</sup> 3p<sup>3</sup></b>
+                </div>
+            </div>
+        </section>
 
-        <div class="card">
-            <h3>🧪 Thí Nghiệm & Mô Hình</h3>
-            <p>Phốt pho trắng bốc cháy trong không khí ở nhiệt độ thấp, trong khi phốt pho đỏ bền vững hơn và chỉ cháy khi đun nóng.</p>
-        </div>
-    </div>
+        <!-- Trình Thuyết Trình -->
+        <section>
+            <h2>🎬 Trình Thuyết Trình (60 - 90 giây)</h2>
+            <p>Bản trình chiếu có tích hợp tính năng đọc tự động bằng giọng nói của trình duyệt. Nhấn nút bên dưới để nghe bài thuyết trình ngắn gọn.</p>
+            <p id="speech-text" style="background: rgba(0,0,0,0.25); padding: 15px; border-radius: 8px; border-left: 3px solid #38bdf8;">
+                Xin chào! Hãy cùng khám phá photpho, ký hiệu P, nguyên tố phi kim thuộc nhóm năm A với số hiệu nguyên tử mười lăm. Tên gọi photpho xuất phát từ tiếng Hy Lạp có nghĩa là kẻ mang ánh sáng, bắt nguồn từ hiện tượng photpho trắng phát ra ánh sáng mờ ảo trong bóng tối khi tiếp xúc với không khí. Photpho có nhiều dạng thù hình khác nhau, trong đó phổ biến nhất là photpho trắng rất độc và dễ tự bốc cháy, cùng với photpho đỏ bền vững và an toàn hơn. Về mặt sinh học, các hợp chất photpho là thành phần tối quan trọng cấu tạo nên phân tử ADN, màng tế bào và hệ thống chuyển hóa năng lượng của mọi sinh vật sống. Trong công nghiệp, photpho là nguyên liệu cốt lõi để sản xuất phân bón nông nghiệp, chất diệt cỏ và diêm quẹt.
+            </p>
+            <button class="primary-btn" onclick="playSpeech()">▶ Nghe Thuyết Trình Tự Động</button>
+        </section>
+
+        <!-- Video YouTube Trực Quan -->
+        <section>
+            <h2>📹 Video Khám Phá Trực Quan</h2>
+            <p>Video chi tiết về tính chất thù hình, hiện tượng phát quang và ứng dụng của nguyên tố Photpho:</p>
+            <div style="position: relative; width: 100%; padding-bottom: 56.25%; height: 0; margin-top: 15px; border-radius: 12px; overflow: hidden; background: #000; border: 1px solid rgba(255,255,255,0.1);">
+                <iframe src="https://www.youtube.com/embed/1Bv1q825e6g" 
+                        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;" 
+                        allowfullscreen></iframe>
+            </div>
+        </section>
+
+        <!-- Ứng dụng Y tế và Sinh học -->
+        <section>
+            <h2>🏥 Vai trò sinh học và y tế</h2>
+            <h3>ADN và năng lượng tế bào</h3>
+            <p>Gốc photphat là bộ khung chính cấu trúc nên chuỗi ADN, ARN và phân tử mang năng lượng ATP, giúp lưu trữ và truyền đạt thông tin di truyền trong cơ thể.</p>
+            <h3>Xương và răng</h3>
+            <p>Kết hợp cùng canxi, các hợp chất photphat tạo nên khoáng chất cứng chắc xây dựng nên hệ thống xương và răng vững chắc cho cơ thể động vật.</p>
+        </section>
+
+        <!-- Ứng dụng Công nghiệp -->
+        <section>
+            <h2>🏭 Ứng dụng công nghiệp và nông nghiệp</h2>
+            <ul>
+                <li><b>Phân bón hóa học:</b> Phần lớn sản lượng photpho dùng để sản xuất axit photphoric (H<sub>3</sub>PO<sub>4</sub>) và phân lân, cung cấp dinh dưỡng thiết yếu cho sự phát triển của cây trồng.</li>
+                <li><b>Sản xuất diêm an toàn:</b> Photpho đỏ được sử dụng bôi lên vỏ bao diêm để tạo ma sát sinh nhiệt kích thích đầu que diêm cháy.</li>
+                <li><b>Hóa chất công nghiệp:</b> Ứng dụng trong sản xuất chất tẩy rửa, hợp chất chống cháy và luyện kim.</li>
+            </ul>
+        </section>
+
+        <!-- Mô hình 3D -->
+        <section>
+            <h2>🪐 Mô hình nguyên tử 3D (minh họa)</h2>
+            <p>Mô hình trực quan mô phỏng cấu trúc hạt nhân và 3 lớp electron của nguyên tử Photpho (15 proton, cấu hình electron các lớp: 2, 8, 5).</p>
+            <div id="canvas-3d"></div>
+        </section>
+
+        <!-- Thí nghiệm thực tế -->
+        <section>
+            <h2>🧫 Thí nghiệm thực tế: So sánh tính chất photpho trắng và đỏ</h2>
+            <p><b>Mục tiêu:</b> Nhận biết sự khác biệt rõ rệt về độ hoạt động hóa học giữa các dạng thù hình.</p>
+            <div class="warning-box"><b>An toàn:</b> Photpho trắng cực kỳ độc, tự bốc cháy ở nhiệt độ thấp (khoảng 30°C) và gây bỏng nặng khi chạm vào da. Bắt buộc phải bảo quản ngâm chìm trong nước và chỉ quan sát qua video hoặc giáo viên biểu diễn trong điều kiện an toàn tuyệt đối.</div>
+            <h3>Cách thực hiện cơ bản</h3>
+            <ol>
+                <li>Quan sát mẫu photpho trắng được ngâm trong nước (không khí khô sẽ làm nó tự bốc cháy tạo khói trắng P<sub>2</sub>O<sub>5</sub>).</li>
+                <li>Quan sát photpho đỏ bền vững hơn, không tự bốc cháy ở điều kiện thường.</li>
+            </ol>
+            <h3>Giải thích hiện tượng</h3>
+            <p>Photpho trắng có cấu trúc mạng lưới phân tử kém bền (P<sub>4</sub>), liên kết dễ đứt gãy nên hoạt động hóa học rất mạnh; trong khi photpho đỏ có cấu trúc polyme phức tạp hơn nhiều nên bền vững hơn ở điều kiện thường.</p>
+        </section>
+
+        <!-- Câu hỏi tương tác -->
+        <section>
+            <h2>🧠 Câu hỏi tương tác thông minh</h2>
+            <div class="quiz-box">
+                <p><b>Hỏi:</b> Tại sao photpho trắng phải được bảo quản bằng cách ngâm chìm hoàn toàn trong nước, khác biệt hoàn toàn với cách bảo quản kim loại kiềm trong dầu hỏa?</p>
+                <p style="color: #60a5fa; margin-top: 10px; cursor: pointer; font-weight: bold;" onclick="alert('Đáp án giải thích: Photpho trắng không tác dụng với nước và có nhiệt độ tự bốc cháy trong không khí rất thấp (chỉ khoảng 30°C). Ngâm trong nước giúp ngăn cách hoàn toàn photpho trắng với oxy của không khí, đồng thời giữ cho nhiệt độ của nó luôn ổn định, tránh nguy cơ tự bốc cháy gây hỏa hoạn.')">👉 Bấm vào đây để xem đáp án / giải thích</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        Trang học tập Hóa học trực quan · Thiết kế phục vụ bài thuyết trình học sinh
+    </footer>
+
+    <script>
+        // Tính năng đọc thuyết trình bằng giọng nói
+        function playSpeech() {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const text = document.getElementById('speech-text').innerText;
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'vi-VN';
+                utterance.rate = 1.0;
+                window.speechSynthesis.speak(utterance);
+            } else {
+                alert('Trình duyệt của bạn không hỗ trợ tính năng đọc giọng nói tự động!');
+            }
+        }
+
+        // Mô hình 3D bằng Three.js (Photpho có 3 lớp electron: 2, 8, 5)
+        const container = document.getElementById('canvas-3d');
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(container.clientWidth, container.clientHeight);
+        container.appendChild(renderer.domElement);
+
+        // Hạt nhân trung tâm
+        const geometry = new THREE.SphereGeometry(0.7, 32, 32);
+        const material = new THREE.MeshBasicMaterial({ color: 0x38bdf8, wireframe: true });
+        const nucleus = new THREE.Mesh(geometry, material);
+        scene.add(nucleus);
+
+        // Vòng quỹ đạo electron mô phỏng (3 lớp)
+        const orbits = [];
+        for(let i = 1; i <= 3; i++) {
+            let radius = 1.2 + i * 0.5;
+            const orbitGeo = new THREE.RingGeometry(radius - 0.02, radius + 0.02, 32);
+            const orbitMat = new THREE.MeshBasicMaterial({ color: 0x60a5fa, side: THREE.DoubleSide, transparent: true, opacity: 0.4 });
+            const orbit = new THREE.Mesh(orbitGeo, orbitMat);
+            orbit.rotation.x = Math.PI / (3 + i);
+            scene.add(orbit);
+            orbits.push(orbit);
+        }
+
+        camera.position.z = 4.5;
+
+        function animate() {
+            requestAnimationFrame(animate);
+            nucleus.rotation.x += 0.01;
+            nucleus.rotation.y += 0.01;
+            orbits.forEach((orbit, index) => {
+                orbit.rotation.z += (index + 1) * 0.003;
+            });
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // Responsive khi thay đổi kích thước màn hình
+        window.addEventListener('resize', () => {
+            camera.aspect = container.clientWidth / container.clientHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(container.clientWidth, container.clientHeight);
+        });
+    </script>
 </body>
 </html>
