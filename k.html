@@ -4,39 +4,310 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kali (Potassium) - Hóa Học Trực Quan</title>
+    <!-- Thêm thư viện Three.js cho mô hình 3D -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #0b0f19; color: #fff; margin: 0; padding: 20px; }
-        .container { max-width: 800px; margin: 0 auto; background: rgba(255, 255, 255, 0.05); padding: 30px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.1); }
-        a { color: #60a5fa; text-decoration: none; }
-        a:hover { text-decoration: underline; }
-        .back-btn { display: inline-block; margin-bottom: 20px; font-weight: bold; }
-        h1 { color: #38bdf8; }
-        .card { background: rgba(0,0,0,0.3); padding: 20px; border-radius: 10px; margin-top: 15px; }
+        :root {
+            --bg-color: #0b0f19;
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --accent-color: #38bdf8;
+            --text-color: #f3f4f6;
+            --text-muted: #9ca3af;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--bg-color) 0%, #1e1b4b 100%);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+        header {
+            max-width: 850px;
+            margin: 0 auto 30px auto;
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 15px;
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .back-link:hover { text-decoration: underline; }
+        header span.badge {
+            background: rgba(56, 189, 248, 0.15);
+            color: var(--accent-color);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+        h1 {
+            color: var(--accent-color);
+            margin: 5px 0 10px 0;
+            font-size: 2.2rem;
+        }
+        h1 span { color: var(--text-muted); font-weight: 400; }
+        header p { color: var(--text-muted); margin: 0 0 15px 0; font-size: 1.05rem; }
+        .meta-tags span {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.08);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            margin-right: 8px;
+            margin-top: 5px;
+        }
+        main { max-width: 850px; margin: 0 auto; }
+        section {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            padding: 25px 30px;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 25px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+        h2 { color: var(--accent-color); margin-top: 0; font-size: 1.4rem; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
+        h3 { color: #60a5fa; margin-bottom: 8px; font-size: 1.1rem; }
+        .grid-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .stat-card {
+            background: rgba(0,0,0,0.25);
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.05);
+            text-align: center;
+        }
+        .stat-card small { color: var(--text-muted); display: block; font-size: 0.85rem; }
+        .stat-card b { color: var(--accent-color); font-size: 1.2rem; }
+        .primary-btn {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 10px;
+            transition: 0.3s;
+        }
+        .primary-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+        #canvas-3d { width: 100%; height: 260px; border-radius: 12px; background: rgba(0,0,0,0.4); margin-top: 10px; }
+        ul, ol { padding-left: 20px; }
+        li { margin-bottom: 8px; }
+        .warning-box {
+            background: rgba(239, 68, 68, 0.1);
+            border-left: 4px solid #ef4444;
+            padding: 12px 15px;
+            border-radius: 0 8px 8px 0;
+            margin: 15px 0;
+            font-size: 0.95rem;
+        }
+        .quiz-box {
+            background: rgba(59, 130, 246, 0.1);
+            border-left: 4px solid #3b82f6;
+            padding: 15px;
+            border-radius: 0 8px 8px 0;
+            margin-top: 15px;
+        }
+        footer {
+            max-width: 850px;
+            margin: 40px auto 20px auto;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--border-color);
+            padding-top: 20px;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <a href="index.html" class="back-btn">← Quay lại Bảng tuần hoàn chính</a>
-        
-        <h1>19 - Kali (Potassium)</h1>
-        <p><strong>Loại:</strong> Kim loại kiềm • <strong>Chu kỳ:</strong> 4 • <strong>Nhóm:</strong> IA</p>
-        <p><strong>Khối lượng nguyên tử:</strong> 39.1 u | <strong>Cấu hình electron:</strong> [Ar] 4s¹</p>
 
-        <div class="card">
-            <h3>🎬 Trình Thuyết Trình (60 - 90 giây)</h3>
-            <p>Kali là kim loại kiềm mềm, màu bạc, có tính hoạt động hóa học cực kỳ mạnh, phản ứng dữ dội với nước và đóng vai trò sinh học không thể thiếu cho cơ thể sống.</p>
+    <header>
+        <a href="index.html" class="back-link">← Quay lại Bảng tuần hoàn chính</a>
+        <span class="badge">Phòng thí nghiệm nguyên tố · 19</span>
+        <h1>KALI <span>(Potassium)</span></h1>
+        <p>Kim loại kiềm hoạt động cực mạnh, mềm như sáp, có ngọn lửa cháy màu tím đặc trưng và là chất dinh dưỡng thiết yếu cho sự sống.</p>
+        <div class="meta-tags">
+            <span>Số hiệu nguyên tử: 19</span>
+            <span>Chu kì: 4</span>
+            <span>Nhóm: IA</span>
         </div>
+    </header>
 
-        <div class="card">
-            <h3>🏭 Tác Dụng Y Tế & Công Nghiệp</h3>
-            <p><strong>Nông nghiệp & Công nghiệp:</strong> Hợp chất của kali (như phân kali) là nguồn dinh dưỡng thiết yếu giúp cây trồng phát triển, đồng thời dùng trong sản xuất xà phòng và thủy tinh.<br>
-            <strong>Y tế & Sinh học:</strong> Ion Kali ($K^+$) đóng vai trò cực kỳ quan trọng trong việc điều hòa huyết áp, dẫn truyền xung thần kinh và hoạt động của cơ bắp trong cơ thể người.</p>
-        </div>
+    <main>
+        <!-- Hồ sơ nguyên tố -->
+        <section>
+            <h2>🔎 Hồ sơ nguyên tố</h2>
+            <p>Kali là nguyên tố hóa học có ký hiệu <b>K</b> (viết tắt từ kalium). Ở điều kiện chuẩn, kali là một kim loại kiềm mềm màu trắng bạc, nhẹ đến mức có thể nổi trên mặt nước và phản ứng mãnh liệt với nước.</p>
+            <div class="grid-stats">
+                <div class="stat-card">
+                    <small>Số hiệu nguyên tử</small>
+                    <b>19</b>
+                </div>
+                <div class="stat-card">
+                    <small>Khối lượng nguyên tử</small>
+                    <b>39,10 u</b>
+                </div>
+                <div class="stat-card">
+                    <small>Cấu hình electron</small>
+                    <b>[Ar] 4s<sup>1</sup></b>
+                </div>
+            </div>
+        </section>
 
-        <div class="card">
-            <h3>🧪 Thí Nghiệm & Mô Hình</h3>
-            <p>Khi cho một mẩu kali nhỏ vào nước, nó tự bốc cháy với ngọn lửa màu tím đặc trưng và tạo ra dung dịch kiềm mạnh kèm theo tiếng nổ nhỏ.</p>
-        </div>
-    </div>
+        <!-- Trình Thuyết Trình -->
+        <section>
+            <h2>🎬 Trình Thuyết Trình (60 - 90 giây)</h2>
+            <p>Bản trình chiếu có tích hợp tính năng đọc tự động bằng giọng nói của trình duyệt. Nhấn nút bên dưới để nghe bài thuyết trình ngắn gọn.</p>
+            <p id="speech-text" style="background: rgba(0,0,0,0.25); padding: 15px; border-radius: 8px; border-left: 3px solid #38bdf8;">
+                Xin chào! Hãy cùng khám phá kali, ký hiệu K, kim loại kiềm thuộc nhóm một A với số hiệu nguyên tử mười chín. Kali được nhà hóa học Sir Humphry Davy tách ra lần đầu tiên vào năm 1807 thông qua phương pháp điện phân dung dịch kiềm. Tên gọi tiếng Anh potassium bắt nguồn từ từ potash (tro thực vật), phản ánh nguồn gốc khai thác kali lịch sử từ tro đốt cây. Kali là kim loại cực kỳ hoạt động, mềm đến mức có thể cắt bằng dao và bốc cháy với ngọn lửa màu tím hồng đặc trưng khi tiếp xúc với nước. Trong sinh học, ion kali đóng vai trò cốt lõi trong việc duy trì hoạt động của hệ thần kinh và cơ bắp ở người và thực vật. Các hợp chất của kali cũng là thành phần chủ lực trong phân bón nông nghiệp giúp cây trồng phát triển mạnh mẽ.
+            </p>
+            <button class="primary-btn" onclick="playSpeech()">▶ Nghe Thuyết Trình Tự Động</button>
+        </section>
+
+        <!-- Video YouTube Trực Quan -->
+        <section>
+            <h2>📹 Video Khám Phá Trực Quan</h2>
+            <p>Video chi tiết về tính chất hóa học, phản ứng mãnh liệt và ứng dụng của nguyên tố Kali:</p>
+            <div style="position: relative; width: 100%; padding-bottom: 56.25%; height: 0; margin-top: 15px; border-radius: 12px; overflow: hidden; background: #000; border: 1px solid rgba(255,255,255,0.1);">
+                <iframe src="https://www.youtube.com/embed/92X0q7Z-5C4" 
+                        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;" 
+                        allowfullscreen></iframe>
+            </div>
+        </section>
+
+        <!-- Ứng dụng Y tế và Sinh học -->
+        <section>
+            <h2>🏥 Vai trò sinh học và y tế</h2>
+            <h3>Cân bằng điện giải</h3>
+            <p>Ion kali (K<sup>+</sup>) là ion dương chính bên trong tế bào sống, đóng vai trò sống còn trong việc duy trì điện thế màng tế bào, dẫn truyền xung thần kinh và điều hòa nhịp tim.</p>
+            <h3>Dinh dưỡng</h3>
+            <p>Thiếu hụt hoặc thừa kali trong máu đều gây ảnh hưởng nghiêm trọng đến cơ bắp và tim mạch, vì vậy việc bổ sung qua thực phẩm tự nhiên như chuối, rau xanh là vô cùng cần thiết.</p>
+        </section>
+
+        <!-- Ứng dụng Công nghiệp -->
+        <section>
+            <h2>🏭 Ứng dụng công nghiệp và nông nghiệp</h2>
+            <ul>
+                <li><b>Phân bón hóa học:</b> Phần lớn kali khai thác được sử dụng để sản xuất phân bón chứa kali (như KCl, KNO<sub>3</sub>), cung cấp dinh dưỡng thiết yếu giúp cây trồng tăng năng suất và sức đề kháng.</li>
+                <li><b>Sản xuất thủy tinh và xà phòng:</b> Các hợp chất kali được dùng trong công nghiệp luyện thủy tinh chịu lực và sản xuất xà phòng lỏng cao cấp.</li>
+                <li><b>Chất nổ và pháo hoa:</b> Diêm tiêu (KNO<sub>3</sub>) là thành phần truyền thống quan trọng trong chế tạo thuốc súng đen và pháo hoa nghệ thuật.</li>
+            </ul>
+        </section>
+
+        <!-- Mô hình 3D -->
+        <section>
+            <h2>🪐 Mô hình nguyên tử 3D (minh họa)</h2>
+            <p>Mô hình trực quan mô phỏng cấu trúc hạt nhân và lớp vỏ electron của nguyên tử Kali (19 proton, cấu hình 4 lớp electron: 2, 8, 8, 1).</p>
+            <div id="canvas-3d"></div>
+        </section>
+
+        <!-- Thí nghiệm thực tế -->
+        <section>
+            <h2>🧫 Thí nghiệm thực tế: Kali phản ứng với nước</h2>
+            <p><b>Mụcיות:</b> Quan sát tính khử mạnh mẽ và ngọn lửa đặc trưng của kim loại kiềm.</p>
+            <div class="warning-box"><b>An toàn:</b> Phản ứng của kali với nước diễn ra cực kỳ mãnh liệt, nổ tung và bắn tia lửa mang theo ngọn lửa tím. Bắt buộc phải thực hiện sau lớp kính chắn bảo vệ, dưới sự giám sát tuyệt đối của giáo viên.</div>
+            <h3>Cách thực hiện cơ bản</h3>
+            <ol>
+                <li>Cắt một mẩu nhỏ kali (được bảo quản ngâm trong dầu hỏa) bằng dao trong khay chuyên dụng.</li>
+                <li>Thả mẩu kali vào chậu nước có pha sẵn dung dịch chỉ thị màu (như phenolphtalein).</li>
+                <li>Quan sát kali chạy trên mặt nước, bốc cháy với ngọn lửa màu tím và làm dung dịch chuyển sang màu hồng đỏ.</li>
+            </ol>
+            <h3>Giải thích hiện tượng</h3>
+            <p>Kali tác dụng rất mạnh với nước giải phóng khí hydro và sinh ra dung dịch kiềm mạnh (KOH). Nhiệt lượng tỏa ra quá lớn làm hydro bốc cháy, ngọn lửa bị nhuốm màu tím đặc trưng bởi hơi kali.</p>
+        </section>
+
+        <!-- Câu hỏi tương tác -->
+        <section>
+            <h2>🧠 Câu hỏi tương tác thông minh</h2>
+            <div class="quiz-box">
+                <p><b>Hỏi:</b> Tại sao các kim loại kiềm như kali và natri tuyệt đối không được bảo quản bằng cách để ngoài không khí hay ngâm trong nước, mà phải ngâm chìm trong dầu hỏa?</p>
+                <p style="color: #60a5fa; margin-top: 10px; cursor: pointer; font-weight: bold;" onclick="alert('Đáp án giải thích: Kim loại kiềm có tính khử rất mạnh, phản ứng mãnh liệt với hơi ẩm và oxy có sẵn trong không khí để tạo thành oxit hoặc hydroxit, thậm chí có thể tự bốc cháy. Dầu hỏa là hỗn hợp hydrocarbon trơ, không chứa oxy tự do và không tác dụng với kim loại kiềm, giúp ngăn cách hoàn toàn kim loại với không khí và nước bên ngoài.')">👉 Bấm vào đây để xem đáp án / giải thích</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        Trang học tập Hóa học trực quan · Thiết kế phục vụ bài thuyết trình học sinh
+    </footer>
+
+    <script>
+        // Tính năng đọc thuyết trình bằng giọng nói
+        function playSpeech() {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const text = document.getElementById('speech-text').innerText;
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'vi-VN';
+                utterance.rate = 1.0;
+                window.speechSynthesis.speak(utterance);
+            } else {
+                alert('Trình duyệt của bạn không hỗ trợ tính năng đọc giọng nói tự động!');
+            }
+        }
+
+        // Mô hình 3D bằng Three.js (Kali có 4 lớp electron: 2, 8, 8, 1)
+        const container = document.getElementById('canvas-3d');
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(container.clientWidth, container.clientHeight);
+        container.appendChild(renderer.domElement);
+
+        // Hạt nhân trung tâm
+        const geometry = new THREE.SphereGeometry(0.7, 32, 32);
+        const material = new THREE.MeshBasicMaterial({ color: 0x38bdf8, wireframe: true });
+        const nucleus = new THREE.Mesh(geometry, material);
+        scene.add(nucleus);
+
+        // Vòng quỹ đạo electron mô phỏng (4 lớp)
+        const orbits = [];
+        for(let i = 1; i <= 4; i++) {
+            let radius = 1.1 + i * 0.45;
+            const orbitGeo = new THREE.RingGeometry(radius - 0.02, radius + 0.02, 32);
+            const orbitMat = new THREE.MeshBasicMaterial({ color: 0x60a5fa, side: THREE.DoubleSide, transparent: true, opacity: 0.4 });
+            const orbit = new THREE.Mesh(orbitGeo, orbitMat);
+            orbit.rotation.x = Math.PI / (3 + i);
+            scene.add(orbit);
+            orbits.push(orbit);
+        }
+
+        camera.position.z = 4.8;
+
+        function animate() {
+            requestAnimationFrame(animate);
+            nucleus.rotation.x += 0.01;
+            nucleus.rotation.y += 0.01;
+            orbits.forEach((orbit, index) => {
+                orbit.rotation.z += (index + 1) * 0.003;
+            });
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // Responsive khi thay đổi kích thước màn hình
+        window.addEventListener('resize', () => {
+            camera.aspect = container.clientWidth / container.clientHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(container.clientWidth, container.clientHeight);
+        });
+    </script>
 </body>
 </html>
