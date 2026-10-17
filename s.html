@@ -4,39 +4,310 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lưu huỳnh (Sulfur) - Hóa Học Trực Quan</title>
+    <!-- Thêm thư viện Three.js cho mô hình 3D -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #0b0f19; color: #fff; margin: 0; padding: 20px; }
-        .container { max-width: 800px; margin: 0 auto; background: rgba(255, 255, 255, 0.05); padding: 30px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.1); }
-        a { color: #60a5fa; text-decoration: none; }
-        a:hover { text-decoration: underline; }
-        .back-btn { display: inline-block; margin-bottom: 20px; font-weight: bold; }
-        h1 { color: #38bdf8; }
-        .card { background: rgba(0,0,0,0.3); padding: 20px; border-radius: 10px; margin-top: 15px; }
+        :root {
+            --bg-color: #0b0f19;
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --accent-color: #38bdf8;
+            --text-color: #f3f4f6;
+            --text-muted: #9ca3af;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--bg-color) 0%, #1e1b4b 100%);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+        header {
+            max-width: 850px;
+            margin: 0 auto 30px auto;
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 15px;
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .back-link:hover { text-decoration: underline; }
+        header span.badge {
+            background: rgba(56, 189, 248, 0.15);
+            color: var(--accent-color);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+        h1 {
+            color: var(--accent-color);
+            margin: 5px 0 10px 0;
+            font-size: 2.2rem;
+        }
+        h1 span { color: var(--text-muted); font-weight: 400; }
+        header p { color: var(--text-muted); margin: 0 0 15px 0; font-size: 1.05rem; }
+        .meta-tags span {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.08);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            margin-right: 8px;
+            margin-top: 5px;
+        }
+        main { max-width: 850px; margin: 0 auto; }
+        section {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            padding: 25px 30px;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 25px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+        h2 { color: var(--accent-color); margin-top: 0; font-size: 1.4rem; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
+        h3 { color: #60a5fa; margin-bottom: 8px; font-size: 1.1rem; }
+        .grid-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .stat-card {
+            background: rgba(0,0,0,0.25);
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.05);
+            text-align: center;
+        }
+        .stat-card small { color: var(--text-muted); display: block; font-size: 0.85rem; }
+        .stat-card b { color: var(--accent-color); font-size: 1.2rem; }
+        .primary-btn {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 10px;
+            transition: 0.3s;
+        }
+        .primary-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+        #canvas-3d { width: 100%; height: 260px; border-radius: 12px; background: rgba(0,0,0,0.4); margin-top: 10px; }
+        ul, ol { padding-left: 20px; }
+        li { margin-bottom: 8px; }
+        .warning-box {
+            background: rgba(239, 68, 68, 0.1);
+            border-left: 4px solid #ef4444;
+            padding: 12px 15px;
+            border-radius: 0 8px 8px 0;
+            margin: 15px 0;
+            font-size: 0.95rem;
+        }
+        .quiz-box {
+            background: rgba(59, 130, 246, 0.1);
+            border-left: 4px solid #3b82f6;
+            padding: 15px;
+            border-radius: 0 8px 8px 0;
+            margin-top: 15px;
+        }
+        footer {
+            max-width: 850px;
+            margin: 40px auto 20px auto;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--border-color);
+            padding-top: 20px;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <a href="index.html" class="back-btn">← Quay lại Bảng tuần hoàn chính</a>
-        
-        <h1>16 - Lưu huỳnh (Sulfur)</h1>
-        <p><strong>Loại:</strong> Phi kim • <strong>Chu kỳ:</strong> 3 • <strong>Nhóm:</strong> VIA</p>
-        <p><strong>Khối lượng nguyên tử:</strong> 32.1 u | <strong>Cấu hình electron:</strong> [Ne] 3s² 3p⁴</p>
 
-        <div class="card">
-            <h3>🎬 Trình Thuyết Trình (60 - 90 giây)</h3>
-            <p>Lưu huỳnh là chất rắn màu vàng ở điều kiện thường, xuất hiện nhiều ở các vùng mỏ khoáng sản và miệng núi lửa, đóng vai trò nền tảng trong ngành công nghiệp hóa chất.</p>
+    <header>
+        <a href="index.html" class="back-link">← Quay lại Bảng tuần hoàn chính</a>
+        <span class="badge">Phòng thí nghiệm nguyên tố · 16</span>
+        <h1>LƯU HUỲNH <span>(Sulfur)</span></h1>
+        <p>Nguyên tố phi kim dạng chất rắn màu vàng, quen thuộc từ thời cổ đại và là nguyên liệu cốt lõi trong công nghiệp hóa chất toàn cầu.</p>
+        <div class="meta-tags">
+            <span>Số hiệu nguyên tử: 16</span>
+            <span>Chu kì: 3</span>
+            <span>Nhóm: VIA</span>
         </div>
+    </header>
 
-        <div class="card">
-            <h3>🏭 Tác Dụng Y Tế & Công Nghiệp</h3>
-            <p><strong>Công nghiệp:</strong> Dùng để sản xuất axit sulfuric ($H_2SO_4$) — hóa chất quan trọng bậc nhất thế giới, lưu hóa cao su và sản xuất phân bón.<br>
-            <strong>Y tế & Đời sống:</strong> Ứng dụng trong điều chế thuốc trị bệnh ngoài da, mỹ phẩm trị mụn và các chất diệt nấm.</p>
-        </div>
+    <main>
+        <!-- Hồ sơ nguyên tố -->
+        <section>
+            <h2>🔎 Hồ sơ nguyên tố</h2>
+            <p>Lưu huỳnh là nguyên tố hóa học có ký hiệu <b>S</b>. Ở điều kiện thường, lưu huỳnh là chất rắn kết tinh màu vàng chanh, không tan trong nước và có cấu trúc phân tử dạng vòng bát giác (S<sub>8</sub>).</p>
+            <div class="grid-stats">
+                <div class="stat-card">
+                    <small>Số hiệu nguyên tử</small>
+                    <b>16</b>
+                </div>
+                <div class="stat-card">
+                    <small>Khối lượng nguyên tử</small>
+                    <b>32,06 u</b>
+                </div>
+                <div class="stat-card">
+                    <small>Cấu hình electron</small>
+                    <b>[Ne] 3s<sup>2</sup> 3p<sup>4</sup></b>
+                </div>
+            </div>
+        </section>
 
-        <div class="card">
-            <h3>🧪 Thí Nghiệm & Mô Hình</h3>
-            <p>Lưu huỳnh cháy trong không khí tạo ra ngọn lửa màu xanh lam và khí sulfur dioxide ($SO_2$) có mùi hắc đặc trưng.</p>
-        </div>
-    </div>
+        <!-- Trình Thuyết Trình -->
+        <section>
+            <h2>🎬 Trình Thuyết Trình (60 - 90 giây)</h2>
+            <p>Bản trình chiếu có tích hợp tính năng đọc tự động bằng giọng nói của trình duyệt. Nhấn nút bên dưới để nghe bài thuyết trình ngắn gọn.</p>
+            <p id="speech-text" style="background: rgba(0,0,0,0.25); padding: 15px; border-radius: 8px; border-left: 3px solid #38bdf8;">
+                Xin chào! Hãy cùng khám phá lưu huỳnh, ký hiệu S, nguyên tố phi kim thuộc nhóm sáu A với số hiệu nguyên tử mười sáu. Lưu huỳnh đã được con người biết đến và sử dụng từ thời cổ đại, thường xuất hiện ở dạng các mỏ kết tinh màu vàng quanh các miệng núi lửa. Trong tự nhiên, lưu huỳnh tồn tại cả ở dạng đơn chất lẫn trong các hợp chất muối sulfide và sulfate. Về mặt ứng dụng, phần lớn lưu huỳnh được khai thác để sản xuất axit sulfuric, hóa chất quan trọng bậc nhất trong nền công nghiệp hiện đại dùng để chế tạo phân bón, chất tẩy rửa và luyện kim. Bên cạnh đó, lưu huỳnh còn đóng vai trò thiết yếu trong quá trình lưu hóa cao su giúp lốp xe bền chắc, cũng như là thành phần trong y dược và nông nghiệp.
+            </p>
+            <button class="primary-btn" onclick="playSpeech()">▶ Nghe Thuyết Trình Tự Động</button>
+        </section>
+
+        <!-- Video YouTube Trực Quan -->
+        <section>
+            <h2>📹 Video Khám Phá Trực Quan</h2>
+            <p>Video chi tiết về tính chất, trạng thái tự nhiên và ứng dụng thực tế của nguyên tố Lưu huỳnh:</p>
+            <div style="position: relative; width: 100%; padding-bottom: 56.25%; height: 0; margin-top: 15px; border-radius: 12px; overflow: hidden; background: #000; border: 1px solid rgba(255,255,255,0.1);">
+                <iframe src="https://www.youtube.com/embed/834sWq_xJ1c" 
+                        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;" 
+                        allowfullscreen></iframe>
+            </div>
+        </section>
+
+        <!-- Ứng dụng Y tế và Sinh học -->
+        <section>
+            <h2>🏥 Vai trò sinh học và y tế</h2>
+            <h3>Axit amin và protein</h3>
+            <p>Lưu huỳnh là thành phần cấu trúc của các axit amin thiết yếu như cysteine và methionine, đóng vai trò tạo nên cấu trúc không gian ổn định cho protein trong cơ thể sống.</p>
+            <h3>Ứng dụng ngoài da</h3>
+            <p>Các chế phẩm chứa lưu huỳnh từ lâu đã được ứng dụng trong da liễu để hỗ trợ điều trị mụn trứng cá, bệnh viêm da và nấm nhờ tính chất sát trùng nhẹ.</p>
+        </section>
+
+        <!-- Ứng dụng Công nghiệp -->
+        <section>
+            <h2>🏭 Ứng dụng công nghiệp và nông nghiệp</h2>
+            <ul>
+                <li><b>Sản xuất axit sulfuric (H<sub>2</sub>SO<sub>4</sub>):</b> Ứng dụng lớn nhất của lưu huỳnh là làm nguyên liệu đốt cháy tạo khí SO<sub>2</sub> để tổng hợp axit sulfuric phục vụ toàn bộ ngành công nghiệp hóa chất.</li>
+                <li><b>Quá trình lưu hóa cao su:</b> Đun nóng cao su tự nhiên cùng với lưu huỳnh giúp tạo ra các cầu nối ngang bền vững, làm tăng độ đàn hồi và độ bền cho lốp xe.</li>
+                <li><b>Nông nghiệp:</b> Sử dụng các chế phẩm lưu huỳnh để làm thuốc trừ sâu tự nhiên, chống nấm bệnh trên cây trồng và cải tạo đất.</li>
+            </ul>
+        </section>
+
+        <!-- Mô hình 3D -->
+        <section>
+            <h2>🪐 Mô hình nguyên tử 3D (minh họa)</h2>
+            <p>Mô hình trực quan mô phỏng cấu trúc hạt nhân và 3 lớp electron của nguyên tử Lưu huỳnh (16 proton, cấu hình electron các lớp: 2, 8, 6).</p>
+            <div id="canvas-3d"></div>
+        </section>
+
+        <!-- Thí nghiệm thực tế -->
+        <section>
+            <h2>🧫 Thí nghiệm thực tế: Lưu huỳnh tác dụng với sắt</h2>
+            <p><b>Mục tiêu:</b> Quan sát phản ứng hóa hợp trực tiếp giữa phi kim và kim loại ở nhiệt độ cao.</p>
+            <div class="warning-box"><b>An toàn:</b> Phản ứng tỏa nhiều nhiệt, sinh ra khí lưu huỳnh đioxit (SO<sub>2</sub>) có mùi hắc gây khó thở. Bắt buộc phải thực hiện trong tủ hút khí độc hoặc phòng thí nghiệm có thông gió tốt dưới sự hướng dẫn của giáo viên.</div>
+            <h3>Cách thực hiện cơ bản</h3>
+            <ol>
+                <li>Trộn đều bột lưu huỳnh và bột sắt theo tỉ lệ thích hợp trong ống nghiệm hoặc chén sứ.</li>
+                <li>Đun nóng hỗn hợp trên ngọn lửa đèn cồn.</li>
+                <li>Quan sát hiện tượng hỗn hợp tự phát sáng rực rỡ lan truyền tạo thành hợp chất sắt(II) sulfide (FeS).</li>
+            </ol>
+            <h3>Giải thích hiện tượng</h3>
+            <p>Lưu huỳnh thể hiện tính oxy hóa, tác dụng trực tiếp với sắt khi được cung cấp nhiệt độ ban đầu để tạo ra muối sulfide rắn màu xám đen.</p>
+        </section>
+
+        <!-- Câu hỏi tương tác -->
+        <section>
+            <h2>🧠 Câu hỏi tương tác thông minh</h2>
+            <div class="quiz-box">
+                <p><b>Hỏi:</b> Tại sao lốp xe ô tô, xe máy làm bằng cao su tự nhiên sau khi được xử lý bằng lưu huỳnh (quá trình lưu hóa) lại trở nên bền chắc và đàn hồi hơn rất nhiều so với cao su chưa lưu hóa?</p>
+                <p style="color: #60a5fa; margin-top: 10px; cursor: pointer; font-weight: bold;" onclick="alert('Đáp án giải thích: Cao su tự nhiên ban đầu có cấu trúc mạch polymer dạng sợi rời rạc, dễ bị dính khi nóng và giòn khi lạnh. Khi tiến hành lưu hóa, các nguyên tử lưu huỳnh tạo ra các cầu nối hóa học gắn kết các mạch polymer lại với nhau thành một mạng lưới không gian bền vững, giúp cao su có độ đàn hồi cao, chịu lực tốt và không bị biến dạng ở nhiệt độ thường.')">👉 Bấm vào đây để xem đáp án / giải thích</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        Trang học tập Hóa học trực quan · Thiết kế phục vụ bài thuyết trình học sinh
+    </footer>
+
+    <script>
+        // Tính năng đọc thuyết trình bằng giọng nói
+        function playSpeech() {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const text = document.getElementById('speech-text').innerText;
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'vi-VN';
+                utterance.rate = 1.0;
+                window.speechSynthesis.speak(utterance);
+            } else {
+                alert('Trình duyệt của bạn không hỗ trợ tính năng đọc giọng nói tự động!');
+            }
+        }
+
+        // Mô hình 3D bằng Three.js (Lưu huỳnh có 3 lớp electron: 2, 8, 6)
+        const container = document.getElementById('canvas-3d');
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(container.clientWidth, container.clientHeight);
+        container.appendChild(renderer.domElement);
+
+        // Hạt nhân trung tâm
+        const geometry = new THREE.SphereGeometry(0.7, 32, 32);
+        const material = new THREE.MeshBasicMaterial({ color: 0x38bdf8, wireframe: true });
+        const nucleus = new THREE.Mesh(geometry, material);
+        scene.add(nucleus);
+
+        // Vòng quỹ đạo electron mô phỏng (3 lớp)
+        const orbits = [];
+        for(let i = 1; i <= 3; i++) {
+            let radius = 1.2 + i * 0.5;
+            const orbitGeo = new THREE.RingGeometry(radius - 0.02, radius + 0.02, 32);
+            const orbitMat = new THREE.MeshBasicMaterial({ color: 0x60a5fa, side: THREE.DoubleSide, transparent: true, opacity: 0.4 });
+            const orbit = new THREE.Mesh(orbitGeo, orbitMat);
+            orbit.rotation.x = Math.PI / (3 + i);
+            scene.add(orbit);
+            orbits.push(orbit);
+        }
+
+        camera.position.z = 4.5;
+
+        function animate() {
+            requestAnimationFrame(animate);
+            nucleus.rotation.x += 0.01;
+            nucleus.rotation.y += 0.01;
+            orbits.forEach((orbit, index) => {
+                orbit.rotation.z += (index + 1) * 0.003;
+            });
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // Responsive khi thay đổi kích thước màn hình
+        window.addEventListener('resize', () => {
+            camera.aspect = container.clientWidth / container.clientHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(container.clientWidth, container.clientHeight);
+        });
+    </script>
 </body>
 </html>
