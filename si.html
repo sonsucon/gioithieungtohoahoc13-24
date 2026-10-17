@@ -4,39 +4,309 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Silic (Silicon) - Hóa Học Trực Quan</title>
+    <!-- Thêm thư viện Three.js cho mô hình 3D -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #0b0f19; color: #fff; margin: 0; padding: 20px; }
-        .container { max-width: 800px; margin: 0 auto; background: rgba(255, 255, 255, 0.05); padding: 30px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.1); }
-        a { color: #60a5fa; text-decoration: none; }
-        a:hover { text-decoration: underline; }
-        .back-btn { display: inline-block; margin-bottom: 20px; font-weight: bold; }
-        h1 { color: #38bdf8; }
-        .card { background: rgba(0,0,0,0.3); padding: 20px; border-radius: 10px; margin-top: 15px; }
+        :root {
+            --bg-color: #0b0f19;
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --accent-color: #38bdf8;
+            --text-color: #f3f4f6;
+            --text-muted: #9ca3af;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--bg-color) 0%, #1e1b4b 100%);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+        header {
+            max-width: 850px;
+            margin: 0 auto 30px auto;
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 15px;
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .back-link:hover { text-decoration: underline; }
+        header span.badge {
+            background: rgba(56, 189, 248, 0.15);
+            color: var(--accent-color);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+        h1 {
+            color: var(--accent-color);
+            margin: 5px 0 10px 0;
+            font-size: 2.2rem;
+        }
+        h1 span { color: var(--text-muted); font-weight: 400; }
+        header p { color: var(--text-muted); margin: 0 0 15px 0; font-size: 1.05rem; }
+        .meta-tags span {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.08);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            margin-right: 8px;
+            margin-top: 5px;
+        }
+        main { max-width: 850px; margin: 0 auto; }
+        section {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            padding: 25px 30px;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 25px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+        h2 { color: var(--accent-color); margin-top: 0; font-size: 1.4rem; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
+        h3 { color: #60a5fa; margin-bottom: 8px; font-size: 1.1rem; }
+        .grid-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .stat-card {
+            background: rgba(0,0,0,0.25);
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.05);
+            text-align: center;
+        }
+        .stat-card small { color: var(--text-muted); display: block; font-size: 0.85rem; }
+        .stat-card b { color: var(--accent-color); font-size: 1.2rem; }
+        .primary-btn {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 10px;
+            transition: 0.3s;
+        }
+        .primary-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+        #canvas-3d { width: 100%; height: 260px; border-radius: 12px; background: rgba(0,0,0,0.4); margin-top: 10px; }
+        ul, ol { padding-left: 20px; }
+        li { margin-bottom: 8px; }
+        .warning-box {
+            background: rgba(239, 68, 68, 0.1);
+            border-left: 4px solid #ef4444;
+            padding: 12px 15px;
+            border-radius: 0 8px 8px 0;
+            margin: 15px 0;
+            font-size: 0.95rem;
+        }
+        .quiz-box {
+            background: rgba(59, 130, 246, 0.1);
+            border-left: 4px solid #3b82f6;
+            padding: 15px;
+            border-radius: 0 8px 8px 0;
+            margin-top: 15px;
+        }
+        footer {
+            max-width: 850px;
+            margin: 40px auto 20px auto;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--border-color);
+            padding-top: 20px;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <a href="index.html" class="back-btn">← Quay lại Bảng tuần hoàn chính</a>
-        
-        <h1>14 - Silic (Silicon)</h1>
-        <p><strong>Loại:</strong> Á kim • <strong>Chu kỳ:</strong> 3 • <strong>Nhóm:</strong> IVA</p>
-        <p><strong>Khối lượng nguyên tử:</strong> 28.1 u | <strong>Cấu hình electron:</strong> [Ne] 3s² 3p²</p>
 
-        <div class="card">
-            <h3>🎬 Trình Thuyết Trình (60 - 90 giây)</h3>
-            <p>Silic là nguyên tố phổ biến thứ hai trong vỏ Trái Đất (sau ôxy), là vật liệu bán dẫn cốt lõi làm thay đổi toàn bộ nền công nghệ thông tin hiện đại.</p>
+    <header>
+        <a href="index.html" class="back-link">← Quay lại Bảng tuần hoàn chính</a>
+        <span class="badge">Phòng thí nghiệm nguyên tố · 14</span>
+        <h1>SILIC <span>(Silicon)</span></h1>
+        <p>Nguyên tố á kim phổ biến thứ hai trong vỏ Trái Đất, vật liệu cốt lõi tạo nên kỷ nguyên công nghệ bán dẫn và vi mạch điện tử.</p>
+        <div class="meta-tags">
+            <span>Số hiệu nguyên tử: 14</span>
+            <span>Chu kì: 3</span>
+            <span>Nhóm: IVA</span>
         </div>
+    </header>
 
-        <div class="card">
-            <h3>🏭 Tác Dụng Y Tế & Công Nghiệp</h3>
-            <p><strong>Công nghiệp điện tử:</strong> Dùng để sản xuất chip bán dẫn, vi mạch điện tử, pin năng lượng mặt trời.<br>
-            <strong>Đời sống & Y tế:</strong> Dùng làm vật liệu silicone trong y khoa (van tim nhân tạo, túi ngực, ống thông) và sản xuất thủy tinh, gốm sứ.</p>
-        </div>
+    <main>
+        <!-- Hồ sơ nguyên tố -->
+        <section>
+            <h2>🔎 Hồ sơ nguyên tố</h2>
+            <p>Silic là nguyên tố hóa học có ký hiệu <b>Si</b>. Ở điều kiện chuẩn, silic là chất rắn kết tinh màu xám tối có ánh kim, giòn và thuộc nhóm á kim với tính bán dẫn đặc trưng.</p>
+            <div class="grid-stats">
+                <div class="stat-card">
+                    <small>Số hiệu nguyên tử</small>
+                    <b>14</b>
+                </div>
+                <div class="stat-card">
+                    <small>Khối lượng nguyên tử</small>
+                    <b>28,09 u</b>
+                </div>
+                <div class="stat-card">
+                    <small>Cấu hình electron</small>
+                    <b>[Ne] 3s<sup>2</sup> 3p<sup>2</sup></b>
+                </div>
+            </div>
+        </section>
 
-        <div class="card">
-            <h3>🧪 Thí Nghiệm & Mô Hình</h3>
-            <p>Silic có tính chất bán dẫn đặc trưng, độ dẫn điện tăng lên khi nhiệt độ tăng hoặc khi pha tạp chất.</p>
-        </div>
-    </div>
+        <!-- Trình Thuyết Trình -->
+        <section>
+            <h2>🎬 Trình Thuyết Trình (60 - 90 giây)</h2>
+            <p>Bản trình chiếu có tích hợp tính năng đọc tự động bằng giọng nói của trình duyệt. Nhấn nút bên dưới để nghe bài thuyết trình ngắn gọn.</p>
+            <p id="speech-text" style="background: rgba(0,0,0,0.25); padding: 15px; border-radius: 8px; border-left: 3px solid #38bdf8;">
+                Xin chào! Hãy cùng khám phá silic, ký hiệu Si, nguyên tố á kim thuộc nhóm bốn A với số hiệu nguyên tử mười bốn. Sau oxy, silic là nguyên tố phổ biến thứ hai trong vỏ Trái Đất, chiếm gần hai mươi tám phần trăm khối lượng và tồn tại chủ yếu ở dạng cát, thạch anh và các khoáng vật silicat. Tên gọi silic bắt nguồn từ tiếng Latinh silex nghĩa là đá cứng. Mặc dù xuất hiện ở khắp mọi nơi trong tự nhiên dưới dạng hợp chất, đơn chất silic tinh khiết phải đến năm 1824 mới được nhà hóa học Jöns Jacob Berzelius cô lập thành công. Nhờ tính chất bán dẫn độc đáo, silic đã trở thành trái tim của toàn bộ ngành công nghiệp điện tử hiện đại, đặt tên cho thung lũng Silicon nổi tiếng tại Mỹ và là vật liệu không thể thiếu trong chip máy tính, pin mặt trời cũng như vật liệu xây dựng.
+            </p>
+            <button class="primary-btn" onclick="playSpeech()">▶ Nghe Thuyết Trình Tự Động</button>
+        </section>
+
+        <!-- Video YouTube Trực Quan -->
+        <section>
+            <h2>📹 Video Khám Phá Trực Quan</h2>
+            <p>Video chi tiết về lịch sử, tính chất bán dẫn và ứng dụng thực tế của nguyên tố Silic:</p>
+            <div style="position: relative; width: 100%; padding-bottom: 56.25%; height: 0; margin-top: 15px; border-radius: 12px; overflow: hidden; background: #000; border: 1px solid rgba(255,255,255,0.1);">
+                <iframe src="https://www.youtube.com/embed/eIUXMmWJtfU" 
+                        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;" 
+                        allowfullscreen></iframe>
+            </div>
+        </section>
+
+        <!-- Ứng dụng Y tế và Công nghệ -->
+        <section>
+            <h2>🏥 Ứng dụng y tế và đời sống</h2>
+            <h3>Vật liệu silicone y tế</h3>
+            <p>Các polymer tổng hợp chứa silic (như silicone) có tính trơ sinh học cao, chịu nhiệt tốt, được ứng dụng rộng rãi trong ống thông tiểu, thiết bị cấy ghép, kính áp tròng và dụng cụ phẫu thuật.</p>
+            <h3>Vai trò sinh học</h3>
+            <p>Silic tồn tại với lượng rất nhỏ trong cơ thể người, giúp hỗ trợ duy trì độ chắc khỏe cho hệ xương, mô liên kết và da.</p>
+        </section>
+
+        <!-- Ứng dụng Công nghiệp -->
+        <section>
+            <h2>🏭 Ứng dụng công nghiệp và vi mạch</h2>
+            <ul>
+                <li><b>Công nghiệp bán dẫn & Chip máy tính:</b> Silic độ tinh khiết cực cao là nền tảng sản xuất vi mạch, transistor và linh kiện điện tử cho mọi thiết bị thông minh ngày nay.</li>
+                <li><b>Pin năng lượng mặt trời:</b> Tấm quang điện làm từ silic tinh thể chuyển đổi trực tiếp ánh sáng mặt trời thành điện năng sạch và hiệu quả.</li>
+                <li><b>Vật liệu xây dựng & Kính:</b> Cát và thạch anh chứa silicon dioxide (SiO<sub>2</sub>) là nguyên liệu chính để sản xuất thủy tinh, gốm sứ và bê tông.</li>
+            </ul>
+        </section>
+
+        <!-- Mô hình 3D -->
+        <section>
+            <h2>🪐 Mô hình nguyên tử 3D (minh họa)</h2>
+            <p>Mô hình trực quan mô phỏng cấu trúc hạt nhân và 3 lớp electron của nguyên tử Silic (14 proton, cấu hình electron các lớp: 2, 8, 4).</p>
+            <div id="canvas-3d"></div>
+        </section>
+
+        <!-- Thí nghiệm thực tế -->
+        <section>
+            <h2>🧫 Thí nghiệm thực tế: Silic phản ứng với dung dịch kiềm</h2>
+            <p><b>Mục tiêu:</b> Khảo sát tính chất hóa học đặc biệt của á kim silic khi tác dụng với kiềm mạnh.</p>
+            <div class="warning-box"><b>An toàn:</b> Phản ứng sử dụng dung dịch kiềm đậm đặc ($\text{NaOH}$) đun nóng có tính ăn mòn da cao, sinh ra khí hydro dễ cháy. Bắt buộc phải thực hiện dưới sự hướng dẫn của giáo viên và tuân thủ quy tắc phòng thí nghiệm.</div>
+            <h3>Cách thực hiện cơ bản</h3>
+            <ol>
+                <li>Cho bột silic vào ống nghiệm chứa dung dịch natri hydroxit ($\text{NaOH}$) loãng hoặc đun nóng nhẹ.</li>
+                <li>Quan sát hiện tượng sủi bọt khí không màu ($\text{H}_2$) và bột silic tan dần tạo dung dịch natri silicat trong suốt.</li>
+            </ol>
+            <h3>Giải thích hiện tượng</h3>
+            <p>Khác với các phi kim thông thường, silic có tính khử thể hiện cả tính axit yếu, tác dụng với dung dịch kiềm mạnh giải phóng khí hydro và tạo ra muối silicat.</p>
+        </section>
+
+        <!-- Câu hỏi tương tác -->
+        <section>
+            <h2>🧠 Câu hỏi tương tác thông minh</h2>
+            <div class="quiz-box">
+                <p><b>Hỏi:</b> Tại sao vùng đất nổi tiếng tập trung các tập đoàn công nghệ hàng đầu thế giới (như Apple, Google, Meta) lại được gọi là "Thung lũng Silicon" (Silicon Valley)?</p>
+                <p style="color: #60a5fa; margin-top: 10px; cursor: pointer; font-weight: bold;" onclick="alert('Đáp án giải thích: Tên gọi này bắt nguồn từ nguyên tố silic (silicon), vật liệu bán dẫn chủ lực được dùng để chế tạo các con chip vi xử lý và chất bán dẫn - nền tảng phần cứng cốt lõi của mọi thiết bị điện tử và máy tính hiện đại khởi nguồn tại khu vực này từ giữa thế kỷ 20.')">👉 Bấm vào đây để xem đáp án / giải thích</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        Trang học tập Hóa học trực quan · Thiết kế phục vụ bài thuyết trình học sinh
+    </footer>
+
+    <script>
+        // Tính năng đọc thuyết trình bằng giọng nói
+        function playSpeech() {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const text = document.getElementById('speech-text').innerText;
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'vi-VN';
+                utterance.rate = 1.0;
+                window.speechSynthesis.speak(utterance);
+            } else {
+                alert('Trình duyệt của bạn không hỗ trợ tính năng đọc giọng nói tự động!');
+            }
+        }
+
+        // Mô hình 3D bằng Three.js (Silic có 3 lớp electron: 2, 8, 4)
+        const container = document.getElementById('canvas-3d');
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(container.clientWidth, container.clientHeight);
+        container.appendChild(renderer.domElement);
+
+        // Hạt nhân trung tâm
+        const geometry = new THREE.SphereGeometry(0.7, 32, 32);
+        const material = new THREE.MeshBasicMaterial({ color: 0x38bdf8, wireframe: true });
+        const nucleus = new THREE.Mesh(geometry, material);
+        scene.add(nucleus);
+
+        // Vòng quỹ đạo electron mô phỏng (3 lớp)
+        const orbits = [];
+        for(let i = 1; i <= 3; i++) {
+            let radius = 1.2 + i * 0.5;
+            const orbitGeo = new THREE.RingGeometry(radius - 0.02, radius + 0.02, 32);
+            const orbitMat = new THREE.MeshBasicMaterial({ color: 0x60a5fa, side: THREE.DoubleSide, transparent: true, opacity: 0.4 });
+            const orbit = new THREE.Mesh(orbitGeo, orbitMat);
+            orbit.rotation.x = Math.PI / (3 + i);
+            scene.add(orbit);
+            orbits.push(orbit);
+        }
+
+        camera.position.z = 4.5;
+
+        function animate() {
+            requestAnimationFrame(animate);
+            nucleus.rotation.x += 0.01;
+            nucleus.rotation.y += 0.01;
+            orbits.forEach((orbit, index) => {
+                orbit.rotation.z += (index + 1) * 0.003;
+            });
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // Responsive khi thay đổi kích thước màn hình
+        window.addEventListener('resize', () => {
+            camera.aspect = container.clientWidth / container.clientHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(container.clientWidth, container.clientHeight);
+        });
+    </script>
 </body>
 </html>
