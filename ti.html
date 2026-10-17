@@ -4,39 +4,309 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Titan (Titanium) - Hóa Học Trực Quan</title>
+    <!-- Thêm thư viện Three.js cho mô hình 3D -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #0b0f19; color: #fff; margin: 0; padding: 20px; }
-        .container { max-width: 800px; margin: 0 auto; background: rgba(255, 255, 255, 0.05); padding: 30px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.1); }
-        a { color: #60a5fa; text-decoration: none; }
-        a:hover { text-decoration: underline; }
-        .back-btn { display: inline-block; margin-bottom: 20px; font-weight: bold; }
-        h1 { color: #38bdf8; }
-        .card { background: rgba(0,0,0,0.3); padding: 20px; border-radius: 10px; margin-top: 15px; }
+        :root {
+            --bg-color: #0b0f19;
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --accent-color: #38bdf8;
+            --text-color: #f3f4f6;
+            --text-muted: #9ca3af;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--bg-color) 0%, #1e1b4b 100%);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+        header {
+            max-width: 850px;
+            margin: 0 auto 30px auto;
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 15px;
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .back-link:hover { text-decoration: underline; }
+        header span.badge {
+            background: rgba(56, 189, 248, 0.15);
+            color: var(--accent-color);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+        h1 {
+            color: var(--accent-color);
+            margin: 5px 0 10px 0;
+            font-size: 2.2rem;
+        }
+        h1 span { color: var(--text-muted); font-weight: 400; }
+        header p { color: var(--text-muted); margin: 0 0 15px 0; font-size: 1.05rem; }
+        .meta-tags span {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.08);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            margin-right: 8px;
+            margin-top: 5px;
+        }
+        main { max-width: 850px; margin: 0 auto; }
+        section {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            padding: 25px 30px;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 25px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+        h2 { color: var(--accent-color); margin-top: 0; font-size: 1.4rem; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
+        h3 { color: #60a5fa; margin-bottom: 8px; font-size: 1.1rem; }
+        .grid-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .stat-card {
+            background: rgba(0,0,0,0.25);
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.05);
+            text-align: center;
+        }
+        .stat-card small { color: var(--text-muted); display: block; font-size: 0.85rem; }
+        .stat-card b { color: var(--accent-color); font-size: 1.2rem; }
+        .primary-btn {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 10px;
+            transition: 0.3s;
+        }
+        .primary-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+        #canvas-3d { width: 100%; height: 260px; border-radius: 12px; background: rgba(0,0,0,0.4); margin-top: 10px; }
+        ul, ol { padding-left: 20px; }
+        li { margin-bottom: 8px; }
+        .warning-box {
+            background: rgba(239, 68, 68, 0.1);
+            border-left: 4px solid #ef4444;
+            padding: 12px 15px;
+            border-radius: 0 8px 8px 0;
+            margin: 15px 0;
+            font-size: 0.95rem;
+        }
+        .quiz-box {
+            background: rgba(59, 130, 246, 0.1);
+            border-left: 4px solid #3b82f6;
+            padding: 15px;
+            border-radius: 0 8px 8px 0;
+            margin-top: 15px;
+        }
+        footer {
+            max-width: 850px;
+            margin: 40px auto 20px auto;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--border-color);
+            padding-top: 20px;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <a href="index.html" class="back-btn">← Quay lại Bảng tuần hoàn chính</a>
-        
-        <h1>22 - Titan (Titanium)</h1>
-        <p><strong>Loại:</strong> Kim loại chuyển tiếp • <strong>Chu kỳ:</strong> 4 • <strong>Nhóm:</strong> IVB</p>
-        <p><strong>Khối lượng nguyên tử:</strong> 47.9 u | <strong>Cấu hình electron:</strong> [Ar] 3d² 4s²</p>
 
-        <div class="card">
-            <h3>🎬 Trình Thuyết Trình (60 - 90 giây)</h3>
-            <p>Titan là kim loại chuyển tiếp có độ bền cơ học cực cao, trọng lượng nhẹ, khả năng chống ăn mòn tuyệt vời (tương đương với bạch kim) và chịu được nhiệt độ khắc nghiệt.</p>
+    <header>
+        <a href="index.html" class="back-link">← Quay lại Bảng tuần hoàn chính</a>
+        <span class="badge">Phòng thí nghiệm nguyên tố · 22</span>
+        <h1>TITAN <span>(Titanium)</span></h1>
+        <p>Kim loại chuyển tiếp siêu nhẹ, cực kỳ bền chắc, chống ăn mòn tuyệt đối và mang lại khả năng tương thích sinh học hoàn hảo với cơ thể người.</p>
+        <div class="meta-tags">
+            <span>Số hiệu nguyên tử: 22</span>
+            <span>Chu kì: 4</span>
+            <span>Nhóm: IVB</span>
         </div>
+    </header>
 
-        <div class="card">
-            <h3>🏭 Tác Dụng Y Tế & Công Nghiệp</h3>
-            <p><strong>Công nghiệp hàng không & vũ trụ:</strong> Dùng làm vật liệu chế tạo vỏ tàu vũ trụ, động cơ phản lực, khung máy bay quân sự.<br>
-            <strong>Y tế & Đời sống:</strong> Nhờ tính tương thích sinh học cao và không độc hại với cơ thể người, titan được dùng rộng rãi để làm khớp nhân tạo, răng giả, ốc vít y tế và thiết bị cấy ghép.</p>
-        </div>
+    <main>
+        <!-- Hồ sơ nguyên tố -->
+        <section>
+            <h2>🔎 Hồ sơ nguyên tố</h2>
+            <p>Titan là nguyên tố hóa học có ký hiệu <b>Ti</b>. Ở điều kiện chuẩn, titan là một kim loại chuyển tiếp có màu xám bạc ánh kim, nổi tiếng với độ bền cơ học cao, trọng lượng nhẹ và khả năng chống chịu ăn mòn cực kỳ ấn tượng.</p>
+            <div class="grid-stats">
+                <div class="stat-card">
+                    <small>Số hiệu nguyên tử</small>
+                    <b>22</b>
+                </div>
+                <div class="stat-card">
+                    <small>Khối lượng nguyên tử</small>
+                    <b>47,87 u</b>
+                </div>
+                <div class="stat-card">
+                    <small>Cấu hình electron</small>
+                    <b>[Ar] 3d² 4s²</b>
+                </div>
+            </div>
+        </section>
 
-        <div class="card">
-            <h3>🧪 Thí Nghiệm & Mô Hình</h3>
-            <p>Bột titan cháy sáng rực rỡ khi đun nóng trong oxy, và là một trong số ít kim loại có thể cháy trong khí nitơ tạo thành titan nitride.</p>
-        </div>
-    </div>
+        <!-- Trình Thuyết Trình -->
+        <section>
+            <h2>🎬 Trình Thuyết Trình (60 - 90 giây)</h2>
+            <p>Bản trình chiếu có tích hợp tính năng đọc tự động bằng giọng nói của trình duyệt. Nhấn nút bên dưới để nghe bài thuyết trình ngắn gọn.</p>
+            <p id="speech-text" style="background: rgba(0,0,0,0.25); padding: 15px; border-radius: 8px; border-left: 3px solid #38bdf8;">
+                Xin chào! Hãy cùng khám phá titan, ký hiệu Ti, kim loại chuyển tiếp thuộc nhóm bốn B với số hiệu nguyên tử hai mươi hai. Titan được phát hiện lần đầu tiên vào năm 1791 bởi nhà khoáng vật học người Anh William Gregor, và sau đó được đặt tên bởi nhà hóa học người Đức Martin Heinrich Klaproth theo các vị thần Titan trong thần thoại Hy Lạp để vinh danh độ bền bỉ và sức mạnh vượt trội của nguyên tố này. Titan là nguyên tố phổ biến thứ chín trong vỏ Trái Đất, tồn tại chủ yếu trong các khoáng vật như rutil và ilmenit. Với tỉ lệ độ bền trên trọng lượng cực cao cùng lớp màng oxit bảo vệ chống ăn mòn tuyệt đối trong nước biển hay hóa chất, titan là vật liệu chủ lực trong công nghệ hàng không vũ trụ, chế tạo máy bay chiến đấu, tàu vũ trụ, cũng như các thiết bị y tế cấy ghép và dụng cụ thể thao cao cấp.
+            </p>
+            <button class="primary-btn" onclick="playSpeech()">▶ Nghe Thuyết Trình Tự Động</button>
+        </section>
+
+        <!-- Video YouTube Trực Quan -->
+        <section>
+            <h2>📹 Video Khám Phá Trực Quan</h2>
+            <p>Video chi tiết về lịch sử, tính chất cơ lý và ứng dụng thực tế của nguyên tố Titan:</p>
+            <div style="position: relative; width: 100%; padding-bottom: 56.25%; height: 0; margin-top: 15px; border-radius: 12px; overflow: hidden; background: #000; border: 1px solid rgba(255,255,255,0.1);">
+                <iframe src="https://www.youtube.com/embed/UBnR2b5G_T0" 
+                        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;" 
+                        allowfullscreen></iframe>
+            </div>
+        </section>
+
+        <!-- Ứng dụng Y tế và Sinh học -->
+        <section>
+            <h2>🏥 Ứng dụng y học và tính tương thích sinh học</h2>
+            <h3>Cấy ghép y tế</h3>
+            <p>Titan có khả năng dung nạp hoàn hảo với cơ thể người (tương thích sinh học tuyệt đối) và có thể bám dính trực tiếp vào mô xương. Do đó, nó là vật liệu hàng đầu để chế tạo khớp nhân tạo, trụ răng implant và đinh vít cố định cột sống.</p>
+            <h3>Mỹ phẩm và chống nắng</h3>
+            <p>Hợp chất titan dioxide (TiO₂) là thành phần phổ biến trong các loại kem chống nắng và mỹ phẩm nhờ khả năng phản xạ và hấp thụ tia cực tím (UV) cực kỳ an toàn cho da.</p>
+        </section>
+
+        <!-- Ứng dụng Công nghiệp -->
+        <section>
+            <h2>🏭 Ứng dụng công nghiệp và hàng không vũ trụ</h2>
+            <ul>
+                <li><b>Công nghiệp hàng không:</b> Khung vỏ máy bay phản lực, động cơ tên lửa và tàu vũ trụ đều sử dụng hợp kim titan để giảm trọng lượng nhưng vẫn đảm bảo chịu lực cực tốt ở nhiệt độ cao.</li>
+                <li><b>Hàng hải và thiết bị biển:</b> Nhờ khả năng chống ăn mòn hoàn toàn trước nước biển và muối, titan được dùng làm trục chân vịt tàu thủy, ống dẫn nhiệt trong các giàn khoan dầu khí.</li>
+                <li><b>Đời sống cao cấp:</b> Chế tạo khung xe đạp đua siêu nhẹ, gậy đánh golf chuyên nghiệp và đồng hồ vỏ titan chống xước.</li>
+            </ul>
+        </section>
+
+        <!-- Mô hình 3D -->
+        <section>
+            <h2>🪐 Mô hình nguyên tử 3D (minh họa)</h2>
+            <p>Mô hình trực quan mô phỏng cấu trúc hạt nhân và 4 lớp electron của nguyên tử Titan (22 proton, cấu hình electron các lớp: 2, 8, 10, 2).</p>
+            <div id="canvas-3d"></div>
+        </section>
+
+        <!-- Thí nghiệm thực tế -->
+        <section>
+            <h2>🧫 Thí nghiệm thực tế: Tính bền vững và chống ăn mòn của Titan</h2>
+            <p><b>Mục tiêu:</b> Khảo sát khả năng kháng axit và chống chịu ăn mòn đỉnh cao của kim loại titan.</p>
+            <div class="warning-box"><b>An toàn:</b> Thí nghiệm sử dụng hóa chất mạnh, yêu cầu tuân thủ tuyệt đối quy định an toàn phòng thí nghiệm và dưới sự giám sát của giáo viên.</div>
+            <h3>Cách thực hiện cơ bản</h3>
+            <ol>
+                <li>Nhúng một tấm titan nhỏ vào các dung dịch axit loãng hoặc dung dịch kiềm ở nhiệt độ thường.</li>
+                <li>Quan sát hiện tượng kim loại hoàn toàn trơ lỳ, không bị ăn mòn hay phản ứng nhờ lớp màng bảo vệ siêu bền.</li>
+            </ol>
+            <h3>Giải thích hiện tượng</h3>
+            <p>Khi tiếp xúc với không khí hoặc oxy, titan ngay lập tức phủ lên mình một lớp màng titan dioxide (TiO₂) mỏng, trong suốt nhưng cực kỳ bền vững, ngăn cách hoàn toàn kim loại bên trong khỏi sự tấn công của môi trường hóa chất.</p>
+        </section>
+
+        <!-- Câu hỏi tương tác -->
+        <section>
+            <h2>🧠 Câu hỏi tương tác thông minh</h2>
+            <div class="quiz-box">
+                <p><b>Hỏi:</b> Tại sao các thiết bị y tế cấy ghép vào cơ thể người như khớp háng nhân tạo hay trụ răng giả lại ưu tiên sử dụng kim loại titan thay vì dùng thép thông thường?</p>
+                <p style="color: #60a5fa; margin-top: 10px; cursor: pointer; font-weight: bold;" onclick="alert('Đáp án giải thích: Thép thông thường khi ở trong môi trường dịch cơ thể có thể bị ăn mòn rỉ sét và gây phản ứng đào thải độc hại. Ngược lại, titan hoàn toàn trơ với dịch cơ thể, có độ bền cơ học cao, trọng lượng nhẹ và đặc biệt có tính tương thích sinh học cao giúp xương người có thể mọc bám trực tiếp vào bề mặt titan, tạo sự cố định vững chắc lâu dài.')">👉 Bấm vào đây để xem đáp án / giải thích</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        Trang học tập Hóa học trực quan · Thiết kế phục vụ bài thuyết trình học sinh
+    </footer>
+
+    <script>
+        // Tính năng đọc thuyết trình bằng giọng nói
+        function playSpeech() {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const text = document.getElementById('speech-text').innerText;
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'vi-VN';
+                utterance.rate = 1.0;
+                window.speechSynthesis.speak(utterance);
+            } else {
+                alert('Trình duyệt của bạn không hỗ trợ tính năng đọc giọng nói tự động!');
+            }
+        }
+
+        // Mô hình 3D bằng Three.js (Titan có 4 lớp electron: 2, 8, 10, 2)
+        const container = document.getElementById('canvas-3d');
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(container.clientWidth, container.clientHeight);
+        container.appendChild(renderer.domElement);
+
+        // Hạt nhân trung tâm
+        const geometry = new THREE.SphereGeometry(0.7, 32, 32);
+        const material = new THREE.MeshBasicMaterial({ color: 0x38bdf8, wireframe: true });
+        const nucleus = new THREE.Mesh(geometry, material);
+        scene.add(nucleus);
+
+        // Vòng quỹ đạo electron mô phỏng (4 lớp)
+        const orbits = [];
+        for(let i = 1; i <= 4; i++) {
+            let radius = 1.1 + i * 0.45;
+            const orbitGeo = new THREE.RingGeometry(radius - 0.02, radius + 0.02, 32);
+            const orbitMat = new THREE.MeshBasicMaterial({ color: 0x60a5fa, side: THREE.DoubleSide, transparent: true, opacity: 0.4 });
+            const orbit = new THREE.Mesh(orbitGeo, orbitMat);
+            orbit.rotation.x = Math.PI / (3 + i);
+            scene.add(orbit);
+            orbits.push(orbit);
+        }
+
+        camera.position.z = 4.8;
+
+        function animate() {
+            requestAnimationFrame(animate);
+            nucleus.rotation.x += 0.01;
+            nucleus.rotation.y += 0.01;
+            orbits.forEach((orbit, index) => {
+                orbit.rotation.z += (index + 1) * 0.003;
+            });
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // Responsive khi thay đổi kích thước màn hình
+        window.addEventListener('resize', () => {
+            camera.aspect = container.clientWidth / container.clientHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(container.clientWidth, container.clientHeight);
+        });
+    </script>
 </body>
 </html>
