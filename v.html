@@ -4,39 +4,308 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vanadi (Vanadium) - Hóa Học Trực Quan</title>
+    <!-- Thêm thư viện Three.js cho mô hình 3D -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #0b0f19; color: #fff; margin: 0; padding: 20px; }
-        .container { max-width: 800px; margin: 0 auto; background: rgba(255, 255, 255, 0.05); padding: 30px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.1); }
-        a { color: #60a5fa; text-decoration: none; }
-        a:hover { text-decoration: underline; }
-        .back-btn { display: inline-block; margin-bottom: 20px; font-weight: bold; }
-        h1 { color: #38bdf8; }
-        .card { background: rgba(0,0,0,0.3); padding: 20px; border-radius: 10px; margin-top: 15px; }
+        :root {
+            --bg-color: #0b0f19;
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --accent-color: #38bdf8;
+            --text-color: #f3f4f6;
+            --text-muted: #9ca3af;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--bg-color) 0%, #1e1b4b 100%);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+        header {
+            max-width: 850px;
+            margin: 0 auto 30px auto;
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 15px;
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .back-link:hover { text-decoration: underline; }
+        header span.badge {
+            background: rgba(56, 189, 248, 0.15);
+            color: var(--accent-color);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+        h1 {
+            color: var(--accent-color);
+            margin: 5px 0 10px 0;
+            font-size: 2.2rem;
+        }
+        h1 span { color: var(--text-muted); font-weight: 400; }
+        header p { color: var(--text-muted); margin: 0 0 15px 0; font-size: 1.05rem; }
+        .meta-tags span {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.08);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            margin-right: 8px;
+            margin-top: 5px;
+        }
+        main { max-width: 850px; margin: 0 auto; }
+        section {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            padding: 25px 30px;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 25px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+        h2 { color: var(--accent-color); margin-top: 0; font-size: 1.4rem; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
+        h3 { color: #60a5fa; margin-bottom: 8px; font-size: 1.1rem; }
+        .grid-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .stat-card {
+            background: rgba(0,0,0,0.25);
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.05);
+            text-align: center;
+        }
+        .stat-card small { color: var(--text-muted); display: block; font-size: 0.85rem; }
+        .stat-card b { color: var(--accent-color); font-size: 1.2rem; }
+        .primary-btn {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 10px;
+            transition: 0.3s;
+        }
+        .primary-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+        #canvas-3d { width: 100%; height: 260px; border-radius: 12px; background: rgba(0,0,0,0.4); margin-top: 10px; }
+        ul, ol { padding-left: 20px; }
+        li { margin-bottom: 8px; }
+        .warning-box {
+            background: rgba(239, 68, 68, 0.1);
+            border-left: 4px solid #ef4444;
+            padding: 12px 15px;
+            border-radius: 0 8px 8px 0;
+            margin: 15px 0;
+            font-size: 0.95rem;
+        }
+        .quiz-box {
+            background: rgba(59, 130, 246, 0.1);
+            border-left: 4px solid #3b82f6;
+            padding: 15px;
+            border-radius: 0 8px 8px 0;
+            margin-top: 15px;
+        }
+        footer {
+            max-width: 850px;
+            margin: 40px auto 20px auto;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--border-color);
+            padding-top: 20px;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <a href="index.html" class="back-btn">← Quay lại Bảng tuần hoàn chính</a>
-        
-        <h1>23 - Vanadi (Vanadium)</h1>
-        <p><strong>Loại:</strong> Kim loại chuyển tiếp • <strong>Chu kỳ:</strong> 4 • <strong>Nhóm:</strong> VB</p>
-        <p><strong>Khối lượng nguyên tử:</strong> 50.9 u | <strong>Cấu hình electron:</strong> [Ar] 3d³ 4s²</p>
 
-        <div class="card">
-            <h3>🎬 Trình Thuyết Trình (60 - 90 giây)</h3>
-            <p>Vanadi là kim loại chuyển tiếp cứng, có màu xám bạc, nổi tiếng với khả năng tạo ra các hợp kim siêu bền và các hợp chất có nhiều màu sắc rực rỡ ở các trạng thái oxi hóa khác nhau.</p>
+    <header>
+        <a href="index.html" class="back-link">← Quay lại Bảng tuần hoàn chính</a>
+        <span class="badge">Phòng thí nghiệm nguyên tố · 23</span>
+        <h1>VANADI <span>(Vanadium)</span></h1>
+        <p>Kim loại chuyển tiếp cứng cáp, tăng độ bền siêu việt cho hợp kim thép và tạo ra các hợp chất có màu sắc rực rỡ đa dạng.</p>
+        <div class="meta-tags">
+            <span>Số hiệu nguyên tử: 23</span>
+            <span>Chu kì: 4</span>
+            <span>Nhóm: VB</span>
         </div>
+    </header>
 
-        <div class="card">
-            <h3>🏭 Tác Dụng Y Tế & Công Nghiệp</h3>
-            <p><strong>Công nghiệp luyện kim:</strong> Thường được pha vào thép để tạo thành thép hợp kim vanadi cực kỳ chắc chắn, chống mài mòn, dùng làm trục khuỷu, bánh răng, dụng cụ cắt gọt và lò xo.<br>
-            <strong>Xúc tác & Công nghệ:</strong> Hợp chất pentaphốtpho/vanadium pentoxide ($V_2O_5$) được dùng làm chất xúc tác quan trọng trong sản xuất axit sulfuric.</p>
-        </div>
+    <main>
+        <!-- Hồ sơ nguyên tố -->
+        <section>
+            <h2>🔎 Hồ sơ nguyên tố</h2>
+            <p>Vanadi là nguyên tố hóa học có ký hiệu <b>V</b>. Ở điều kiện chuẩn, vanadi là một kim loại chuyển tiếp màu xám bạc, có cấu trúc tinh thể cứng, dễ uốn và khả năng chống ăn mòn cực tốt trước kiềm và axit.</p>
+            <div class="grid-stats">
+                <div class="stat-card">
+                    <small>Số hiệu nguyên tử</small>
+                    <b>23</b>
+                </div>
+                <div class="stat-card">
+                    <small>Khối lượng nguyên tử</small>
+                    <b>50,94 u</b>
+                </div>
+                <div class="stat-card">
+                    <small>Cấu hình electron</small>
+                    <b>[Ar] 3d³ 4s²</b>
+                </div>
+            </div>
+        </section>
 
-        <div class="card">
-            <h3>🧪 Thí Nghiệm & Mô Hình</h3>
-            <p>Dung dịch muối vanadi có thể thay đổi qua hàng loạt màu sắc khác nhau (xanh dương, xanh lá, vàng, tím) khi cho tác dụng với các chất khử hoặc chất oxi hóa.</p>
-        </div>
-    </div>
+        <!-- Trình Thuyết Trình -->
+        <section>
+            <h2>🎬 Trình Thuyết Trình (60 - 90 giây)</h2>
+            <p>Bản trình chiếu có tích hợp tính năng đọc tự động bằng giọng nói của trình duyệt. Nhấn nút bên dưới để nghe bài thuyết trình ngắn gọn.</p>
+            <p id="speech-text" style="background: rgba(0,0,0,0.25); padding: 15px; border-radius: 8px; border-left: 3px solid #38bdf8;">
+                Xin chào! Hãy cùng khám phá vanadi, ký hiệu V, kim loại chuyển tiếp mang số hiệu nguyên tử hai mươi ba. Vanadi được phát hiện lần đầu tiên vào năm 1801 bởi nhà khoáng vật học người Tây Ban Nha Andrés Manuel del Río, và sau đó được đặt tên theo Vanadis, nữ thần sắc đẹp và sự sống trong thần thoại Bắc Âu, nhằm tôn vinh những hợp chất có màu sắc vô cùng rực rỡ và đẹp mắt mà nó tạo ra. Trong công nghiệp, phần lớn lượng vanadi khai thác được sử dụng làm chất phụ gia cực kỳ quan trọng để hợp kim hóa với thép, giúp tăng độ bền cơ học, khả năng chịu lực va đập và chống mài mòn vượt trội cho các công trình xây dựng, dụng cụ cơ khí và lò xo chịu tải trọng cao.
+            </p>
+            <button class="primary-btn" onclick="playSpeech()">▶ Nghe Thuyết Trình Tự Động</button>
+        </section>
+
+        <!-- Video YouTube Trực Quan -->
+        <section>
+            <h2>📹 Video Khám Phá Trực Quan</h2>
+            <p>Video chi tiết về lịch sử, tính chất và ứng dụng thực tế của nguyên tố Vanadi:</p>
+            <div style="position: relative; width: 100%; padding-bottom: 56.25%; height: 0; margin-top: 15px; border-radius: 12px; overflow: hidden; background: #000; border: 1px solid rgba(255,255,255,0.1);">
+                <iframe src="https://www.youtube.com/embed/LvBd4fRFqBU" 
+                        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;" 
+                        allowfullscreen></iframe>
+            </div>
+        </section>
+
+        <!-- Ứng dụng Y tế và Công nghệ -->
+        <section>
+            <h2>🏥 Ứng dụng công nghệ và năng lượng</h2>
+            <h3>Pin dòng chảy Vanadi (Vanadium Redox Flow Battery)</h3>
+            <p>Các hợp chất của vanadi được ứng dụng làm chất điện li trong hệ thống lưu trữ năng lượng quy mô lớn cho điện mặt trời và điện gió nhờ tuổi thọ cao và khả năng phóng điện bền bỉ.</p>
+            <h3>Chất xúc tác hóa học</h3>
+            <p>Oxid vanadi (V₂O₅) đóng vai trò là chất xúc tác chủ lực trong quá trình sản xuất axit sulfuric thương mại toàn cầu.</p>
+        </section>
+
+        <!-- Ứng dụng Công nghiệp -->
+        <section>
+            <h2>🏭 Ứng dụng luyện kim và cơ khí</h2>
+            <ul>
+                <li><b>Hợp kim thép cường độ cao:</b> Thêm một lượng nhỏ vanadi vào thép giúp tinh chỉnh cấu trúc hạt tinh thể, làm tăng mạnh độ cứng, độ dẻo dai và khả năng chống mỏi cho thép làm trục khuỷu, bánh răng và khung xe.</li>
+                <li><b>Hàng không vũ trụ:</b> Kết hợp vanadi cùng titan và nhôm để tạo ra hợp kim siêu nhẹ chịu nhiệt tốt, dùng cho động cơ phản lực và khung vỏ tàu vũ trụ.</li>
+            </ul>
+        </section>
+
+        <!-- Mô hình 3D -->
+        <section>
+            <h2>🪐 Mô hình nguyên tử 3D (minh họa)</h2>
+            <p>Mô hình trực quan mô phỏng cấu trúc hạt nhân và 4 lớp electron của nguyên tử Vanadi (23 proton, cấu hình electron các lớp: 2, 8, 11, 2).</p>
+            <div id="canvas-3d"></div>
+        </section>
+
+        <!-- Thí nghiệm thực tế -->
+        <section>
+            <h2>🧫 Thí nghiệm thực tế: Sự thay đổi màu sắc của dung dịch Vanadi</h2>
+            <p><b>Mục tiêu:</b> Quan sát các mức số oxy hóa khác nhau của vanadi thông qua màu sắc đặc trưng.</p>
+            <div class="warning-box"><b>An toàn:</b> Thí nghiệm liên quan đến hóa chất chuyển tiếp và axit, bắt buộc phải thực hiện dưới sự hướng dẫn nghiêm ngặt của giáo viên trong phòng thí nghiệm.</div>
+            <h3>Cách thực hiện cơ bản</h3>
+            <ol>
+                <li>Khử dung dịch chứa ion vanadate trong môi trường axit bằng kẽm hoạt động.</li>
+                <li>Quan sát dung dịch lần lượt chuyển qua các màu sắc rực rỡ đặc trưng: từ vàng (V⁵⁺) sang xanh dương (V⁴⁺), xanh lá cây (V³⁺) và cuối cùng là màu tím (V²⁺).</li>
+            </ol>
+            <h3>Giải thích hiện tượng</h3>
+            <p>Vanadi có khả năng tồn tại ở nhiều mức số oxy hóa khác nhau trong dung dịch nước, mỗi mức oxi hóa hấp thụ ánh sáng ở bước sóng riêng biệt tạo ra các màu sắc vô cùng bắt mắt.</p>
+        </section>
+
+        <!-- Câu hỏi tương tác -->
+        <section>
+            <h2>🧠 Câu hỏi tương tác thông minh</h2>
+            <div class="quiz-box">
+                <p><b>Hỏi:</b> Tại sao chỉ cần pha thêm một hàm lượng rất nhỏ (dưới 1%) nguyên tố vanadi vào thép lại giúp cải thiện đáng kể độ bền và khả năng chịu lực của các dụng cụ cơ khí chịu tải trọng nặng?</p>
+                <p style="color: #60a5fa; margin-top: 10px; cursor: pointer; font-weight: bold;" onclick="alert('Đáp án giải thích: Khi cho vanadi vào quá trình luyện thép, nó kết hợp với carbon tạo thành các hạt carbide vanadi cực kỳ cứng và mịn phân bố đều trong cấu trúc kim loại. Các hạt này cản trở sự dịch chuyển của cấu trúc tinh thể khi chịu lực, từ đó ngăn chặn hiện tượng nứt gãy, giúp thép trở nên cực kỳ cứng cáp, chịu mài mòn và chống rung động tốt hơn hẳn thép thường.')">👉 Bấm vào đây để xem đáp án / giải thích</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        Trang học tập Hóa học trực quan · Thiết kế phục vụ bài thuyết trình học sinh
+    </footer>
+
+    <script>
+        // Tính năng đọc thuyết trình bằng giọng nói
+        function playSpeech() {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const text = document.getElementById('speech-text').innerText;
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'vi-VN';
+                utterance.rate = 1.0;
+                window.speechSynthesis.speak(utterance);
+            } else {
+                alert('Trình duyệt của bạn không hỗ trợ tính năng đọc giọng nói tự động!');
+            }
+        }
+
+        // Mô hình 3D bằng Three.js (Vanadi có 4 lớp electron: 2, 8, 11, 2)
+        const container = document.getElementById('canvas-3d');
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(container.clientWidth, container.clientHeight);
+        container.appendChild(renderer.domElement);
+
+        // Hạt nhân trung tâm
+        const geometry = new THREE.SphereGeometry(0.7, 32, 32);
+        const material = new THREE.MeshBasicMaterial({ color: 0x38bdf8, wireframe: true });
+        const nucleus = new THREE.Mesh(geometry, material);
+        scene.add(nucleus);
+
+        // Vòng quỹ đạo electron mô phỏng (4 lớp)
+        const orbits = [];
+        for(let i = 1; i <= 4; i++) {
+            let radius = 1.1 + i * 0.45;
+            const orbitGeo = new THREE.RingGeometry(radius - 0.02, radius + 0.02, 32);
+            const orbitMat = new THREE.MeshBasicMaterial({ color: 0x60a5fa, side: THREE.DoubleSide, transparent: true, opacity: 0.4 });
+            const orbit = new THREE.Mesh(orbitGeo, orbitMat);
+            orbit.rotation.x = Math.PI / (3 + i);
+            scene.add(orbit);
+            orbits.push(orbit);
+        }
+
+        camera.position.z = 4.8;
+
+        function animate() {
+            requestAnimationFrame(animate);
+            nucleus.rotation.x += 0.01;
+            nucleus.rotation.y += 0.01;
+            orbits.forEach((orbit, index) => {
+                orbit.rotation.z += (index + 1) * 0.003;
+            });
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // Responsive khi thay đổi kích thước màn hình
+        window.addEventListener('resize', () => {
+            camera.aspect = container.clientWidth / container.clientHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(container.clientWidth, container.clientHeight);
+        });
+    </script>
 </body>
 </html>
