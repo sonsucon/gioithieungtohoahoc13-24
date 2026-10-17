@@ -4,39 +4,309 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Crom (Chromium) - Hóa Học Trực Quan</title>
+    <!-- Thêm thư viện Three.js cho mô hình 3D -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #0b0f19; color: #fff; margin: 0; padding: 20px; }
-        .container { max-width: 800px; margin: 0 auto; background: rgba(255, 255, 255, 0.05); padding: 30px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.1); }
-        a { color: #60a5fa; text-decoration: none; }
-        a:hover { text-decoration: underline; }
-        .back-btn { display: inline-block; margin-bottom: 20px; font-weight: bold; }
-        h1 { color: #38bdf8; }
-        .card { background: rgba(0,0,0,0.3); padding: 20px; border-radius: 10px; margin-top: 15px; }
+        :root {
+            --bg-color: #0b0f19;
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --accent-color: #38bdf8;
+            --text-color: #f3f4f6;
+            --text-muted: #9ca3af;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--bg-color) 0%, #1e1b4b 100%);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+        header {
+            max-width: 850px;
+            margin: 0 auto 30px auto;
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 15px;
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .back-link:hover { text-decoration: underline; }
+        header span.badge {
+            background: rgba(56, 189, 248, 0.15);
+            color: var(--accent-color);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+        h1 {
+            color: var(--accent-color);
+            margin: 5px 0 10px 0;
+            font-size: 2.2rem;
+        }
+        h1 span { color: var(--text-muted); font-weight: 400; }
+        header p { color: var(--text-muted); margin: 0 0 15px 0; font-size: 1.05rem; }
+        .meta-tags span {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.08);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            margin-right: 8px;
+            margin-top: 5px;
+        }
+        main { max-width: 850px; margin: 0 auto; }
+        section {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            padding: 25px 30px;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 25px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+        h2 { color: var(--accent-color); margin-top: 0; font-size: 1.4rem; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
+        h3 { color: #60a5fa; margin-bottom: 8px; font-size: 1.1rem; }
+        .grid-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .stat-card {
+            background: rgba(0,0,0,0.25);
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.05);
+            text-align: center;
+        }
+        .stat-card small { color: var(--text-muted); display: block; font-size: 0.85rem; }
+        .stat-card b { color: var(--accent-color); font-size: 1.2rem; }
+        .primary-btn {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 10px;
+            transition: 0.3s;
+        }
+        .primary-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+        #canvas-3d { width: 100%; height: 260px; border-radius: 12px; background: rgba(0,0,0,0.4); margin-top: 10px; }
+        ul, ol { padding-left: 20px; }
+        li { margin-bottom: 8px; }
+        .warning-box {
+            background: rgba(239, 68, 68, 0.1);
+            border-left: 4px solid #ef4444;
+            padding: 12px 15px;
+            border-radius: 0 8px 8px 0;
+            margin: 15px 0;
+            font-size: 0.95rem;
+        }
+        .quiz-box {
+            background: rgba(59, 130, 246, 0.1);
+            border-left: 4px solid #3b82f6;
+            padding: 15px;
+            border-radius: 0 8px 8px 0;
+            margin-top: 15px;
+        }
+        footer {
+            max-width: 850px;
+            margin: 40px auto 20px auto;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--border-color);
+            padding-top: 20px;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <a href="index.html" class="back-btn">← Quay lại Bảng tuần hoàn chính</a>
-        
-        <h1>24 - Crom (Chromium)</h1>
-        <p><strong>Loại:</strong> Kim loại chuyển tiếp • <strong>Chu kỳ:</strong> 4 • <strong>Nhóm:</strong> VIB</p>
-        <p><strong>Khối lượng nguyên tử:</strong> 52.0 u | <strong>Cấu hình electron:</strong> [Ar] 3d⁵ 4s¹</p>
 
-        <div class="card">
-            <h3>🎬 Trình Thuyết Trình (60 - 90 giây)</h3>
-            <p>Crom là kim loại cứng, có màu xám thép, độ bóng cao và khả năng chống ăn mòn (chống gỉ sét) cực tốt, là nguồn gốc tên gọi của nó xuất phát từ chữ Hy Lạp có nghĩa là "màu sắc".</p>
+    <header>
+        <a href="index.html" class="back-link">← Quay lại Bảng tuần hoàn chính</a>
+        <span class="badge">Phòng thí nghiệm nguyên tố · 24</span>
+        <h1>CROM <span>(Chromium)</span></h1>
+        <p>Kim loại chuyển tiếp cứng cáp với lớp mạ sáng bóng, chống ăn mòn tuyệt vời và là thành phần cốt lõi tạo nên thép không gỉ.</p>
+        <div class="meta-tags">
+            <span>Số hiệu nguyên tử: 24</span>
+            <span>Chu kì: 4</span>
+            <span>Nhóm: VIB</span>
         </div>
+    </header>
 
-        <div class="card">
-            <h3>🏭 Tác Dụng Y Tế & Công Nghiệp</h3>
-            <p><strong>Công nghiệp luyện kim:</strong> Dùng để sản xuất thép không gỉ (inox) và mạ crôm sáng bóng bảo vệ bề mặt các chi tiết máy, xe cộ.<br>
-            <strong>Đời sống & Hóa chất:</strong> Các hợp chất của crom (như muối cromat) được dùng làm chất nhuộm màu rực rỡ cho sơn, gốm sứ và thuộc da.</p>
-        </div>
+    <main>
+        <!-- Hồ sơ nguyên tố -->
+        <section>
+            <h2>🔎 Hồ sơ nguyên tố</h2>
+            <p>Crom là nguyên tố hóa học có ký hiệu <b>Cr</b>. Crom là một kim loại chuyển tiếp cứng, có màu xám bạc, dễ đánh bóng và có độ bền cơ học cao.</p>
+            <div class="grid-stats">
+                <div class="stat-card">
+                    <small>Số hiệu nguyên tử</small>
+                    <b>24</b>
+                </div>
+                <div class="stat-card">
+                    <small>Khối lượng nguyên tử</small>
+                    <b>52,00 u</b>
+                </div>
+                <div class="stat-card">
+                    <small>Cấu hình electron</small>
+                    <b>[Ar] 3d<sup>5</sup> 4s<sup>1</sup></b>
+                </div>
+            </div>
+        </section>
 
-        <div class="card">
-            <h3>🧪 Thí Nghiệm & Mô Hình</h3>
-            <p>Crom tạo ra các hợp chất có màu sắc vô cùng đặc trưng và bắt mắt ở các mức hóa trị khác nhau, ví dụ như crom(III) có màu lục và crom(VI) có màu vàng/cam đậm.</p>
-        </div>
-    </div>
+        <!-- Trình Thuyết Trình -->
+        <section>
+            <h2>🎬 Trình Thuyết Trình (60 - 90 giây)</h2>
+            <p>Bản trình chiếu có tích hợp tính năng đọc tự động bằng giọng nói của trình duyệt. Nhấn nút bên dưới để nghe bài thuyết trình ngắn gọn.</p>
+            <p id="speech-text" style="background: rgba(0,0,0,0.25); padding: 15px; border-radius: 8px; border-left: 3px solid #38bdf8;">
+                Xin chào! Hãy cùng khám phá crom, ký hiệu Cr, kim loại chuyển tiếp mang số hiệu nguyên tử hai mươi tư. Tên gọi crom bắt nguồn từ tiếng Hy Lạp chroma, có nghĩa là màu sắc, bởi vì các hợp chất của crom có màu sắc vô cùng rực rỡ và đa dạng. Crom nổi tiếng với độ cứng cực cao và khả năng chống gỉ sét tuyệt vời nhờ lớp màng oxit mỏng bền vững bám chặt trên bề mặt. Ứng dụng nổi bật nhất của crom là dùng để mạ bảo vệ bề mặt kim loại và là thành phần không thể thiếu để sản xuất thép không gỉ, giúp các công trình và vật dụng luôn sáng bóng, bền bỉ với thời gian.
+            </p>
+            <button class="primary-btn" onclick="playSpeech()">▶ Nghe Thuyết Trình Tự Động</button>
+        </section>
+
+        <!-- Video YouTube Trực Quan -->
+        <section>
+            <h2>📹 Video Khám Phá Trực Quan</h2>
+            <p>Video chi tiết về tính chất, lịch sử và ứng dụng thực tế của nguyên tố Crom:</p>
+            <div style="position: relative; width: 100%; padding-bottom: 56.25%; height: 0; margin-top: 15px; border-radius: 12px; overflow: hidden; background: #000; border: 1px solid rgba(255,255,255,0.1);">
+                <iframe src="https://www.youtube.com/embed/E7jpabzbJfA" 
+                        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;" 
+                        allowfullscreen></iframe>
+            </div>
+        </section>
+
+        <!-- Ứng dụng Y tế và Sinh học -->
+        <section>
+            <h2>🏥 Vai trò sinh học và y tế</h2>
+            <h3>Vi chất dinh dưỡng</h3>
+            <p>Ở dạng vết, crom(III) đóng vai trò là một nguyên tố vi lượng hỗ trợ cơ thể chuyển hóa carbohydrate và lipid, giúp duy trì mức đường huyết ổn định.</p>
+            <h3>Lưu ý độc tính</h3>
+            <p>Ngược lại, các hợp chất crom hóa trị cao (như crom(VI)) có tính độc hại mạnh, gây kích ứng và nguy hiểm nếu tiếp xúc trực tiếp hoặc hít phải trong môi trường công nghiệp không an toàn.</p>
+        </section>
+
+        <!-- Ứng dụng Công nghiệp -->
+        <section>
+            <h2>🏭 Ứng dụng công nghiệp và đời sống</h2>
+            <ul>
+                <li><b>Sản xuất thép không gỉ (Inox):</b> Thêm crom vào hợp kim sắt (thường trên 10.5%) giúp tạo ra inox chống ăn mòn vượt trội, dùng rộng rãi trong gia dụng và y tế.</li>
+                <li><b>Mạ điện trang trí:</b> Phủ một lớp crom sáng bóng lên các chi tiết ô tô, xe máy và vật dụng để chống mỉ sét và tăng tính thẩm mỹ.</li>
+                <li><b>Chất màu và gốm sứ:</b> Các hợp chất oxit crom (như Cr<sub>2</sub>O<sub>3</sub>) tạo ra màu xanh lá cây đậm đặc trưng dùng cho sơn, mực in và men gốm.</li>
+            </ul>
+        </section>
+
+        <!-- Mô hình 3D -->
+        <section>
+            <h2>🪐 Mô hình nguyên tử 3D (minh họa)</h2>
+            <p>Mô hình trực quan mô phỏng cấu trúc hạt nhân và lớp vỏ electron của nguyên tử Crom (24 proton, cấu hình 4 lớp electron: 2, 8, 13, 1).</p>
+            <div id="canvas-3d"></div>
+        </section>
+
+        <!-- Thí nghiệm thực tế -->
+        <section>
+            <h2>🧫 Thí nghiệm thực tế: Tính thụ động hóa của Crom</h2>
+            <p><b>Mục tiêu:</b> Quan sát hiện tượng crom không tác dụng với axit đặc nguội do lớp màng bảo vệ.</p>
+            <div class="warning-box"><b>An toàn:</b> Sử dụng axit mạnh đặc (như HNO<sub>3</sub> hoặc H<sub>2</sub>SO<sub>4</sub> đặc), bắt buộc phải đeo kính bảo hộ, găng tay và làm việc dưới tủ hút khí độc trong phòng thí nghiệm.</div>
+            <h3>Cách thực hiện cơ bản</h3>
+            <ol>
+                <li>Nhúng một thanh crom sạch vào dung dịch axit nitric (HNO<sub>3</sub>) đặc, nguội.</li>
+                <li>Quan sát thấy không có khí thoát ra do crom bị thụ động hóa bởi lớp màng oxit bảo vệ.</li>
+            </ol>
+            <h3>Giải thích hiện tượng</h3>
+            <p>Lớp màng oxit crom rất mỏng và bền vững ngăn cách kim loại bên trong tiếp tục phản ứng với axit đặc nguội, tương tự như hiện tượng ở nhôm.</p>
+        </section>
+
+        <!-- Câu hỏi tương tác -->
+        <section>
+            <h2>🧠 Câu hỏi tương tác thông minh</h2>
+            <div class="quiz-box">
+                <p><b>Hỏi:</b> Tại sao các vật dụng bằng thép không gỉ (inox) để ngoài trời lâu ngày dù ẩm ướt nhưng vẫn không bị gỉ sét như sắt thông thường?</p>
+                <p style="color: #60a5fa; margin-top: 10px; cursor: pointer; font-weight: bold;" onclick="alert('Đáp án giải thích: Inox chứa một hàm lượng lớn nguyên tố crom. Khi tiếp xúc với oxy trong không khí, crom lập tức tạo ra một lớp màng oxit crom siêu mỏng, trong suốt nhưng cực kỳ bền vững bám trên bề mặt. Lớp màng này tự phục hồi ngay lập tức nếu bị trầy xước, ngăn chặn hoàn toàn không khí và hơi ẩm tấn công phần lõi sắt bên trong.')">👉 Bấm vào đây để xem đáp án / giải thích</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        Trang học tập Hóa học trực quan · Thiết kế phục vụ bài thuyết trình học sinh
+    </footer>
+
+    <script>
+        // Tính năng đọc thuyết trình bằng giọng nói
+        function playSpeech() {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const text = document.getElementById('speech-text').innerText;
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'vi-VN';
+                utterance.rate = 1.0;
+                window.speechSynthesis.speak(utterance);
+            } else {
+                alert('Trình duyệt của bạn không hỗ trợ tính năng đọc giọng nói tự động!');
+            }
+        }
+
+        // Mô hình 3D bằng Three.js (Crom có 4 lớp electron: 2, 8, 13, 1)
+        const container = document.getElementById('canvas-3d');
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(container.clientWidth, container.clientHeight);
+        container.appendChild(renderer.domElement);
+
+        // Hạt nhân trung tâm
+        const geometry = new THREE.SphereGeometry(0.7, 32, 32);
+        const material = new THREE.MeshBasicMaterial({ color: 0x38bdf8, wireframe: true });
+        const nucleus = new THREE.Mesh(geometry, material);
+        scene.add(nucleus);
+
+        // Vòng quỹ đạo electron mô phỏng (4 lớp)
+        const orbits = [];
+        for(let i = 1; i <= 4; i++) {
+            let radius = 1.1 + i * 0.45;
+            const orbitGeo = new THREE.RingGeometry(radius - 0.02, radius + 0.02, 32);
+            const orbitMat = new THREE.MeshBasicMaterial({ color: 0x60a5fa, side: THREE.DoubleSide, transparent: true, opacity: 0.4 });
+            const orbit = new THREE.Mesh(orbitGeo, orbitMat);
+            orbit.rotation.x = Math.PI / (3 + i);
+            scene.add(orbit);
+            orbits.push(orbit);
+        }
+
+        camera.position.z = 4.8;
+
+        function animate() {
+            requestAnimationFrame(animate);
+            nucleus.rotation.x += 0.01;
+            nucleus.rotation.y += 0.01;
+            orbits.forEach((orbit, index) => {
+                orbit.rotation.z += (index + 1) * 0.003;
+            });
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // Responsive khi thay đổi kích thước màn hình
+        window.addEventListener('resize', () => {
+            camera.aspect = container.clientWidth / container.clientHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(container.clientWidth, container.clientHeight);
+        });
+    </script>
 </body>
 </html>
